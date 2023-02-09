@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Places.initialize(getApplicationContext(), "AIzaSyANfFReePunnHK1ax2Srp9lJPvTQnTM9k8");
+        Places.initialize(getApplicationContext(), getString(R.string.maps_api_key));
         placesClient = Places.createClient(this);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
