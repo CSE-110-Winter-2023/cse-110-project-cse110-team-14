@@ -240,9 +240,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                azimuth = (float)Math.toDegrees(orientation[0]);
-                azimuth = (azimuth + 360) % 360;
 
+                azimuth = setOrientation.setOrientation(orientation);
                 getDeviceLocation();
 
             }
