@@ -12,5 +12,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+<<<<<<< HEAD
 rootProject.name = "US3--1"
+=======
+rootProject.name = "My Application"
+>>>>>>> main
 include ':app'
