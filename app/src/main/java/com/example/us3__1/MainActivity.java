@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
 
-        // ...
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
