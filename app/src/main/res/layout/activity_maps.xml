@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true">
+    android:layout_centerInParent="true"
+    android:rotation="-144">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,27 +19,29 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:paddingLeft="10dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="10dp"
             android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toBottomOf="@id/mapCircle"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toLeftOf="@id/mapCircle"
             app:layout_constraintRight_toRightOf="@id/mapCircle"
             app:layout_constraintTop_toTopOf="@id/mapCircle"
-            tools:context=".MapsActivity" />
+            tools:context=".MapsActivity"
+            tools:layout="@layout/support_simple_spinner_dropdown_item" />
 
         <ImageView
             android:id="@+id/mapCircle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
             android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/circle_outline"
+            android:src="@drawable/compass2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toLeftOf="parent"
