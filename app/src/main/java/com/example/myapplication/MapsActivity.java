@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.example.myapplication.MapsActivity;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,6 +42,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 
 import com.example.myapplication.databinding.ActivityMapsBinding;
+import java.sql.Array;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
 
@@ -99,10 +102,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-        /** Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        this.map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        this.map.moveCamera(CameraUpdateFactory.newLatLng(sydney)); **/
+        /** Add a marker in Sydney and move the camera **/
+
+        LatLng parents = new LatLng(32.868599972580114, -117.21998668355046);
+        this.map.addMarker(new MarkerOptions().position(parents).title("Parents"));
     }
 
     @Override
@@ -247,6 +250,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         }
+        ImageView imageView = findViewById(R.id.compass);
+        imageView.setRotation((float) -azimuth);
     }
 
     @Override
