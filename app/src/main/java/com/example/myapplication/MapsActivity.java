@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.myapplication.MapsActivity;
@@ -42,6 +46,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 
 import com.example.myapplication.databinding.ActivityMapsBinding;
+
+import java.security.cert.PKIXCertPathBuilderResult;
 import java.sql.Array;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
@@ -66,6 +72,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double lastLong;
     private LatLng lastLocation = new LatLng(lastLat, lastLong);
 
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+    private EditText longitude, latitude, name;
+    private Button save, cancel;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +94,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        Button addLocation = (Button) findViewById(R.id.addLocation);
+        addLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createNewLocationDialog();
+            }
+        });
     }
 
     /**
@@ -255,4 +275,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
+
+    public void createNewLocationDialog(){
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View locationPopupView = getLayoutInflater().inflate(R.layout.popup, null);
+        latitude = (EditText) locationPopupView.findViewById(R.id.latitude);
+        longitude = (EditText) locationPopupView.findViewById(R.id.longitude);
+        name = (EditText) locationPopupView.findViewById(R.id.name);
+
+        save = (Button) locationPopupView.findViewById(R.id.save);
+        cancel = (Button) locationPopupView.findViewById(R.id.cancel);
+
+        dialogBuilder.setView(locationPopupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
 }
