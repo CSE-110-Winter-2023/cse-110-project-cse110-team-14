@@ -20,6 +20,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.myapplication.MapsActivity;
@@ -66,6 +69,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double lastLong;
     private LatLng lastLocation = new LatLng(lastLat, lastLong);
 
+    private EditText edit;
+    private Button mockButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +88,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // UI Mock Elements
+        edit = findViewById(R.id.mock_degrees);
+        mockButton = findViewById(R.id.mock_button);
     }
 
     /**
@@ -255,4 +265,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
+
+    // below are two mock methods for UI testing
+    public void onClickMock(View v) {
+        String degree = edit.getText().toString();
+        float deg = Float.valueOf(degree);
+        mSensorManager.unregisterListener(this);
+
+        if (lastKnownLocation != null) {
+            lastLat = lastKnownLocation.getLatitude();
+            lastLong = lastKnownLocation.getLongitude();
+            lastLocation = new LatLng(lastLat, lastLong);
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(lastLocation)
+                    .zoom(DEFAULT_ZOOM)
+                    .bearing(deg)
+                    .tilt(0)
+                    .build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+
+        ImageView imageView = findViewById(R.id.compass);
+        imageView.setRotation(-deg);
+    }
+
+    public void onClickCenter(View v) {
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_GAME);
+    }
 }
