@@ -310,6 +310,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_GAME);
+    }
 
     public void createNewLocationDialog(){
         dialogBuilder = new AlertDialog.Builder(this);
