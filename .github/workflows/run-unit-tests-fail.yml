@@ -18,8 +18,8 @@ jobs:
         run: ./gradlew testDebugUnitTest
         
       #renaming localproperties
-      - name: rename
-        run: mv local.properties local.properties.sample
+      - name: create local properties
+        run: touch local.properties
 
       # Report the results
       - name: Android Test Report
