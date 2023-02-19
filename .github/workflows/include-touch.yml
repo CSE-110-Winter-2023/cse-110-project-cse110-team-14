@@ -12,14 +12,15 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
+          
+      #renaming localproperties
+      - name: create local properties
+        run: touch local.properties
 
       # Execute unit tests
       - name: Unit Test
         run: ./gradlew testDebugUnitTest
         
-      #renaming localproperties
-      - name: create local properties
-        run: touch local.properties
 
       # Report the results
       - name: Android Test Report
