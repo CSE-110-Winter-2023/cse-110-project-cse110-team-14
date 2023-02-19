@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 @Database(entities = {LocationItem.class}, version = 1)
 public abstract class LocationDatabase extends RoomDatabase {
@@ -31,9 +32,11 @@ public abstract class LocationDatabase extends RoomDatabase {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
                         super.onCreate(db);
-                        List<LocationItem> locs = LocationItem
-                                .loadJSON(context, "demo_locations.json");
-                        getSingleton(context).locationItemDao().insertAll(locs);
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            List<LocationItem> locs = LocationItem
+                                    .loadJSON(context, "demo_locations.json");
+                            getSingleton(context).locationItemDao().insertAll(locs);
+                        });
                     }
                 })
                 .build();

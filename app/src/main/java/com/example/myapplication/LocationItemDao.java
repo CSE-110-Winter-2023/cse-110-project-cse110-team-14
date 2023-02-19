@@ -27,4 +27,7 @@ public interface LocationItemDao {
 
     @Delete
     int delete(LocationItem locItem);
+
+    @Query("DELETE FROM location_items")
+    public void nukeTable();
 }

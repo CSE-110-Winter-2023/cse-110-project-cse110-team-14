@@ -117,9 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        db = Room.inMemoryDatabaseBuilder(getApplicationContext(), LocationDatabase.class)
-                .allowMainThreadQueries()
-                .build();
+        db = LocationDatabase.getSingleton(this);
         dao = db.locationItemDao();
     }
 
@@ -143,8 +141,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getDeviceLocation();
         /** Add a marker in Sydney and move the camera **/
 
-        LatLng parents = new LatLng(32.868599972580114, -117.21998668355046);
-        this.map.addMarker(new MarkerOptions().position(parents).title("Parents"));
+        // curr pos (32.87, -117.22)
+        List<LocationItem> locItems = dao.getAll();
+        for(LocationItem l: locItems){
+            LatLng newLatLng = new LatLng(l.longitude, l.latitude);
+            this.map.addMarker(new MarkerOptions().position(newLatLng).title(l.label));
+        }
     }
 
     @Override
@@ -329,6 +331,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    public void onClickDBDelete(View v) {
+        dao.nukeTable();
     }
 
     public void createNewLocationDialog(){
