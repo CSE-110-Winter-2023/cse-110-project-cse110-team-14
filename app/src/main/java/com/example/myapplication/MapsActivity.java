@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.myapplication.MapsActivity;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,6 +50,7 @@ import com.example.myapplication.databinding.ActivityMapsBinding;
 
 import java.security.cert.PKIXCertPathBuilderResult;
 import java.sql.Array;
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
 
@@ -78,6 +80,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AlertDialog dialog;
     private EditText longitude, latitude, name;
     private Button save, cancel;
+    private ArrayList<Marker> markerList = new ArrayList<Marker>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -310,6 +314,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_GAME);
+    }
 
     public void createNewLocationDialog(){
         dialogBuilder = new AlertDialog.Builder(this);
@@ -328,7 +333,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String text_latitude = latitude.getText().toString();
+                String text_longitude = longitude.getText().toString();
+                String text_name = name.getText().toString();
+                try {
+                    double input_latitude = Double.parseDouble(text_latitude);
+                    double input_longitude = Double.parseDouble(text_longitude);
+                    dialog.dismiss();
+                    if(-90 <= input_latitude && input_latitude <= 90 && -180 <= input_longitude && input_longitude <= 180) {
+                        Toast.makeText(locationPopupView.getContext(), "Saved!", Toast.LENGTH_LONG).show();
+                        Marker inputLocationMarker = map.addMarker(new MarkerOptions()
+                                .position(new LatLng(input_latitude, input_longitude))
+                                .title(text_name));
+                        markerList.add(inputLocationMarker);
+                    } else {
+                        Toast.makeText(locationPopupView.getContext(), "Please input a correct latitude and longitude", Toast.LENGTH_LONG).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(locationPopupView.getContext(), "Please input a number", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
