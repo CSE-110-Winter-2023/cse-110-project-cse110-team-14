@@ -85,8 +85,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText longitude, latitude, name;
     private Button save, cancel;
     private ArrayList<Marker> markerList = new ArrayList<Marker>();
+    private ArrayList<ImageView> markerView = new ArrayList<ImageView>();
     private LocationItemDao dao;
     private LocationDatabase db;
+    private ConstraintLayout constraintLayout;
+    private float bearingAngle;
+    private int total_marker_existed = 0;
 
 
     @Override
@@ -109,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // UI Mock Elements
         edit = findViewById(R.id.mock_degrees);
         mockButton = findViewById(R.id.mock_button);
-        
+        constraintLayout = findViewById(R.id.constraint);
         Button addLocation = (Button) findViewById(R.id.addLocation);
         addLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         db = LocationDatabase.getSingleton(this);
         dao = db.locationItemDao();
+
     }
 
     /**
@@ -146,7 +151,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<LocationItem> locItems = dao.getAll();
         for(LocationItem l: locItems){
             LatLng newLatLng = new LatLng(l.longitude, l.latitude);
-            this.map.addMarker(new MarkerOptions().position(newLatLng).title(l.label));
+            Marker inputLocationMarker = map.addMarker(new MarkerOptions()
+                    .position(newLatLng)
+                    .title(l.label));
+            markerList.add(inputLocationMarker);
+            addNew();
         }
     }
 
@@ -300,23 +309,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         imageView.setRotation((float) -azimuth);
 
         if(markerList.size() > 0) {
-            //for(Marker m: markerList) {
-                Marker curMarker = markerList.get(0);
+            for(int i = 0; i < markerList.size(); i++) {
+                Marker curMarker = markerList.get(i);
                 double markerLat = curMarker.getPosition().latitude;
                 double markerLong = curMarker.getPosition().longitude;
                 float bearingAngle = (float)calculateBearingAngle(lastLat, lastLong, markerLat, markerLong);
                 double markerDistance = calculateDistance(lastLat, lastLong, markerLat, markerLong);
-                ImageView locationIconView = findViewById(R.id.locationIcon);
+                ImageView locationIconView = markerView.get(i);
                 ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
                 layoutParams.circleAngle = bearingAngle-azimuth;
                 //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
                 locationIconView.setLayoutParams(layoutParams);
-                if(markerDistance < 30*DEFAULT_ZOOM) {
+                if(markerDistance < 33*DEFAULT_ZOOM) {
                     locationIconView.setVisibility(View.INVISIBLE);
                 } else {
                     locationIconView.setVisibility(View.VISIBLE);
                 }
-            //}
+            }
         }
     }
 
@@ -345,6 +354,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ImageView imageView = findViewById(R.id.compass);
         imageView.setRotation(-deg);
+
+        if(markerList.size() > 0) {
+            for(int i = 0; i < markerList.size(); i++) {
+                Marker curMarker = markerList.get(i);
+                double markerLat = curMarker.getPosition().latitude;
+                double markerLong = curMarker.getPosition().longitude;
+                float bearingAngle = (float)calculateBearingAngle(lastLat, lastLong, markerLat, markerLong);
+                double markerDistance = calculateDistance(lastLat, lastLong, markerLat, markerLong);
+                ImageView locationIconView = markerView.get(i);
+                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
+                layoutParams.circleAngle = bearingAngle-deg;
+                //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
+                locationIconView.setLayoutParams(layoutParams);
+                if(markerDistance < 33*DEFAULT_ZOOM) {
+                    locationIconView.setVisibility(View.INVISIBLE);
+                } else {
+                    locationIconView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
     }
 
     public void onClickCenter(View v) {
@@ -356,6 +385,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onClickDBDelete(View v) {
         dao.nukeTable();
+        Toast.makeText(this, "Deleted all Saved Locations", Toast.LENGTH_LONG).show();
     }
 
     public void createNewLocationDialog(){
@@ -389,7 +419,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 .position(new LatLng(input_latitude, input_longitude))
                                 .title(text_name));
                         markerList.add(inputLocationMarker);
-
+                        addNew();
                         //insert new markers to database
                         LocationItem newLoc = new LocationItem(input_latitude, input_longitude, text_name);
                         dao.insert(newLoc);
@@ -432,5 +462,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double d = R * c;
         return d; // returns the distance in meter
-    };
+    }
+
+    public void addNew() {
+        ImageView locationIconView = findViewById(R.id.locationIcon);
+        ImageView view = new ImageView(this);
+        view.setImageResource(R.drawable.baseline_location_on_24);
+        ConstraintLayout.LayoutParams newLayoutParams = new ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+        );
+        newLayoutParams.circleConstraint = R.id.compass;
+        final float scale = getResources().getDisplayMetrics().density;
+        int pixels = (int) (150 * scale + 0.5f);
+        newLayoutParams.circleRadius = pixels;
+        newLayoutParams.circleAngle = bearingAngle-azimuth;
+        view.setLayoutParams(newLayoutParams);
+        constraintLayout.addView(view);
+        markerView.add(view);
+    }
 }
