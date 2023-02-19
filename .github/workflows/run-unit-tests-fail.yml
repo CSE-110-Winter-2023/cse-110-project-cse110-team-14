@@ -19,7 +19,7 @@ jobs:
         
       #renaming localproperties
       - name: rename
-        run: mv local.properties.sample local.properties
+        run: mv local.properties local.properties.sample
 
       # Report the results
       - name: Android Test Report
