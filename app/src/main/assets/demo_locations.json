@@ -1,0 +1,5 @@
+[
+  {"longitude": 15.32,     "latitude":  30,  "label": "loc1"},
+  {"longitude": 20.11,     "latitude":  40,  "label": "loc2"},
+  {"longitude": 32.38,     "latitude":  -117.2,  "label": "ted"}
+]

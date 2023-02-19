@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,6 +20,7 @@ import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import android.util.Log;
 import android.view.View;
@@ -51,6 +53,7 @@ import com.example.myapplication.databinding.ActivityMapsBinding;
 import java.security.cert.PKIXCertPathBuilderResult;
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
 
@@ -81,6 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText longitude, latitude, name;
     private Button save, cancel;
     private ArrayList<Marker> markerList = new ArrayList<Marker>();
+    private LocationItemDao dao;
+    private LocationDatabase db;
 
 
     @Override
@@ -111,6 +116,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 createNewLocationDialog();
             }
         });
+
+        db = Room.inMemoryDatabaseBuilder(getApplicationContext(), LocationDatabase.class)
+                .allowMainThreadQueries()
+                .build();
+        dao = db.locationItemDao();
     }
 
     /**
@@ -150,6 +160,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onPause(){
         super.onPause();
         mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onDestroy(){
+        db.makeDatabase(getApplicationContext());
+        super.onDestroy();
     }
 
     private void getLocationPermission() {
@@ -275,7 +291,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 azimuth = setOrientation.setOrientation(orientation);
                 getDeviceLocation();
-
             }
         }
         ImageView imageView = findViewById(R.id.compass);
@@ -340,12 +355,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     double input_latitude = Double.parseDouble(text_latitude);
                     double input_longitude = Double.parseDouble(text_longitude);
                     dialog.dismiss();
+                    //correct long/lat values
                     if(-90 <= input_latitude && input_latitude <= 90 && -180 <= input_longitude && input_longitude <= 180) {
                         Toast.makeText(locationPopupView.getContext(), "Saved!", Toast.LENGTH_LONG).show();
                         Marker inputLocationMarker = map.addMarker(new MarkerOptions()
                                 .position(new LatLng(input_latitude, input_longitude))
                                 .title(text_name));
                         markerList.add(inputLocationMarker);
+
+                        //insert new markers to database
+                        LocationItem newLoc = new LocationItem(input_latitude, input_longitude, text_name);
+                        dao.insert(newLoc);
                     } else {
                         Toast.makeText(locationPopupView.getContext(), "Please input a correct latitude and longitude", Toast.LENGTH_LONG).show();
                     }
