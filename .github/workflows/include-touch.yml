@@ -12,7 +12,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
-
+          
       #renaming localproperties
       - name: create local properties
         run: touch local.properties
