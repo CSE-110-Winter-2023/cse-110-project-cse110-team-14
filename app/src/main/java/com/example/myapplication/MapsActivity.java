@@ -440,7 +440,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public double calculateBearingAngle(double lat1, double long1, double lat2, double long2) {
+    public static double calculateBearingAngle(double lat1, double long1, double lat2, double long2) {
         double dLong = Math.toRadians(long2 - long1);
         double lat1R = Math.toRadians(lat1);
         double lat2R = Math.toRadians(lat2);
@@ -452,7 +452,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return bearing;
     }
 
-    public double calculateDistance(double lat1, double long1, double lat2, double long2) {
+    public static double calculateDistance(double lat1, double long1, double lat2, double long2) {
         double R = 6378137; // Earth’s mean radius in meter
         double dLat = Math.toRadians(lat2 - lat1);
         double dLong = Math.toRadians(long2 - long1);
