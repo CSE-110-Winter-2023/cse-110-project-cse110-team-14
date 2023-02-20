@@ -24,10 +24,12 @@ import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.MapsActivity;
@@ -50,6 +52,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 
 import com.example.myapplication.databinding.ActivityMapsBinding;
+
+import org.w3c.dom.Text;
 
 import java.security.cert.PKIXCertPathBuilderResult;
 import java.sql.Array;
@@ -85,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText longitude, latitude, name;
     private Button save, cancel;
     private ArrayList<Marker> markerList = new ArrayList<Marker>();
-    private ArrayList<ImageView> markerView = new ArrayList<ImageView>();
+    private ArrayList<View> markerView = new ArrayList<View>();
     private LocationItemDao dao;
     private LocationDatabase db;
     private ConstraintLayout constraintLayout;
@@ -154,8 +158,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Marker inputLocationMarker = map.addMarker(new MarkerOptions()
                     .position(newLatLng)
                     .title(l.label));
+            inputLocationMarker.showInfoWindow();
             markerList.add(inputLocationMarker);
-            addNew();
+            addNew(l.label);
         }
     }
 
@@ -315,7 +320,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double markerLong = curMarker.getPosition().longitude;
                 float bearingAngle = (float)calculateBearingAngle(lastLat, lastLong, markerLat, markerLong);
                 double markerDistance = calculateDistance(lastLat, lastLong, markerLat, markerLong);
-                ImageView locationIconView = markerView.get(i);
+                View locationIconView = markerView.get(i);
                 ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
                 layoutParams.circleAngle = bearingAngle-azimuth;
                 //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
@@ -362,7 +367,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double markerLong = curMarker.getPosition().longitude;
                 float bearingAngle = (float)calculateBearingAngle(lastLat, lastLong, markerLat, markerLong);
                 double markerDistance = calculateDistance(lastLat, lastLong, markerLat, markerLong);
-                ImageView locationIconView = markerView.get(i);
+                View locationIconView = markerView.get(i);
                 ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
                 layoutParams.circleAngle = bearingAngle-deg;
                 //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
@@ -418,8 +423,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Marker inputLocationMarker = map.addMarker(new MarkerOptions()
                                 .position(new LatLng(input_latitude, input_longitude))
                                 .title(text_name));
+                        inputLocationMarker.showInfoWindow();
                         markerList.add(inputLocationMarker);
-                        addNew();
+                        addNew(text_name);
                         //insert new markers to database
                         LocationItem newLoc = new LocationItem(input_latitude, input_longitude, text_name);
                         dao.insert(newLoc);
@@ -464,21 +470,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return d; // returns the distance in meter
     }
 
-    public void addNew() {
-        ImageView locationIconView = findViewById(R.id.locationIcon);
-        ImageView view = new ImageView(this);
-        view.setImageResource(R.drawable.baseline_location_on_24);
+    public void addNew(String name) {
+
         ConstraintLayout.LayoutParams newLayoutParams = new ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.WRAP_CONTENT,
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
         );
         newLayoutParams.circleConstraint = R.id.compass;
-        final float scale = getResources().getDisplayMetrics().density;
-        int pixels = (int) (150 * scale + 0.5f);
-        newLayoutParams.circleRadius = pixels;
+        newLayoutParams.circleRadius = calculatePixels(150);
         newLayoutParams.circleAngle = bearingAngle-azimuth;
-        view.setLayoutParams(newLayoutParams);
-        constraintLayout.addView(view);
-        markerView.add(view);
+
+        View newLayout = getLayoutInflater().inflate(R.layout.label_with_icon, null);
+        newLayout.setLayoutParams(newLayoutParams);
+        TextView editText = (TextView) newLayout.findViewById(R.id.myImageViewText);
+        //ImageView editImage = (ImageView) newLayout.findViewById(R.id.myImageView); Use when trying to change icon for different labels
+
+        editText.setText(name);
+
+        constraintLayout.addView(newLayout);
+        markerView.add(newLayout);
+    }
+
+    public int calculatePixels(int dp) {
+        final float scale = getResources().getDisplayMetrics().density;
+        int pixels = (int) (dp * scale + 0.5f);
+        return pixels;
+    }
+
+    public int spToPx(float sp) {
+        final float scale = getResources().getDisplayMetrics().scaledDensity;
+        int pixels = (int) (sp * scale + 0.5f);
+        return pixels;
     }
 }
