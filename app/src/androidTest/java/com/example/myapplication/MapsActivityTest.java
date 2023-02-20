@@ -46,7 +46,7 @@ public class MapsActivityTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void createOutsideLabelTest() {
+    public void mapsActivityTest() {
         ViewInteraction button = onView(
                 allOf(withId(R.id.addLocation), withText("-"),
                         childAtPosition(
@@ -76,7 +76,7 @@ public class MapsActivityTest {
                                         0),
                                 1),
                         isDisplayed()));
-        editText2.perform(replaceText("15"), closeSoftKeyboard());
+        editText2.perform(replaceText("10"), closeSoftKeyboard());
 
         ViewInteraction editText3 = onView(
                 allOf(withId(R.id.name),
@@ -86,7 +86,7 @@ public class MapsActivityTest {
                                         0),
                                 2),
                         isDisplayed()));
-        editText3.perform(replaceText("Test Point"), closeSoftKeyboard());
+        editText3.perform(replaceText("test"), closeSoftKeyboard());
 
         ViewInteraction button2 = onView(
                 allOf(withId(R.id.save), withText("Save"),
