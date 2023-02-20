@@ -24,10 +24,12 @@ import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.MapsActivity;
@@ -50,6 +52,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 
 import com.example.myapplication.databinding.ActivityMapsBinding;
+
+import org.w3c.dom.Text;
 
 import java.security.cert.PKIXCertPathBuilderResult;
 import java.sql.Array;
@@ -85,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private EditText longitude, latitude, name;
     private Button save, cancel;
     private ArrayList<Marker> markerList = new ArrayList<Marker>();
-    private ArrayList<ImageView> markerView = new ArrayList<ImageView>();
+    private ArrayList<View> markerView = new ArrayList<View>();
     private LocationItemDao dao;
     private LocationDatabase db;
     private ConstraintLayout constraintLayout;
@@ -154,8 +158,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Marker inputLocationMarker = map.addMarker(new MarkerOptions()
                     .position(newLatLng)
                     .title(l.label));
+            inputLocationMarker.showInfoWindow();
             markerList.add(inputLocationMarker);
-            addNew();
+            addNewView(l.label);
         }
     }
 
@@ -251,15 +256,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (lastKnownLocation != null) {
                                 lastLat = lastKnownLocation.getLatitude();
                                 lastLong = lastKnownLocation.getLongitude();
-                                lastLocation = new LatLng(lastLat, lastLong);
-
-                                CameraPosition cameraPosition = new CameraPosition.Builder()
-                                        .target(lastLocation)
-                                        .zoom(DEFAULT_ZOOM)
-                                        .bearing(azimuth)
-                                        .tilt(0)
-                                        .build();
-                                map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                                UpdateCameraLocation.updateCameraLocation(lastLat, lastLong, azimuth, map, DEFAULT_ZOOM);
                             }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
@@ -307,26 +304,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         ImageView imageView = findViewById(R.id.compass);
         imageView.setRotation((float) -azimuth);
+        UpdateIcon.updateIconOrientation(markerList, markerView, azimuth, lastLat, lastLong, DEFAULT_ZOOM);
 
-        if(markerList.size() > 0) {
-            for(int i = 0; i < markerList.size(); i++) {
-                Marker curMarker = markerList.get(i);
-                double markerLat = curMarker.getPosition().latitude;
-                double markerLong = curMarker.getPosition().longitude;
-                float bearingAngle = (float)calculateBearingAngle(lastLat, lastLong, markerLat, markerLong);
-                double markerDistance = calculateDistance(lastLat, lastLong, markerLat, markerLong);
-                ImageView locationIconView = markerView.get(i);
-                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
-                layoutParams.circleAngle = bearingAngle-azimuth;
-                //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
-                locationIconView.setLayoutParams(layoutParams);
-                if(markerDistance < 33*DEFAULT_ZOOM) {
-                    locationIconView.setVisibility(View.INVISIBLE);
-                } else {
-                    locationIconView.setVisibility(View.VISIBLE);
-                }
-            }
-        }
     }
 
     @Override
@@ -341,39 +320,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (lastKnownLocation != null) {
             lastLat = lastKnownLocation.getLatitude();
             lastLong = lastKnownLocation.getLongitude();
-            lastLocation = new LatLng(lastLat, lastLong);
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(lastLocation)
-                    .zoom(DEFAULT_ZOOM)
-                    .bearing(deg)
-                    .tilt(0)
-                    .build();
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            UpdateCameraLocation.updateCameraLocation(lastLat, lastLong, azimuth, map, DEFAULT_ZOOM);
         }
 
         ImageView imageView = findViewById(R.id.compass);
         imageView.setRotation(-deg);
+        UpdateIcon.updateIconOrientation(markerList, markerView, deg, lastLat, lastLong, DEFAULT_ZOOM);
 
-        if(markerList.size() > 0) {
-            for(int i = 0; i < markerList.size(); i++) {
-                Marker curMarker = markerList.get(i);
-                double markerLat = curMarker.getPosition().latitude;
-                double markerLong = curMarker.getPosition().longitude;
-                float bearingAngle = (float)calculateBearingAngle(lastLat, lastLong, markerLat, markerLong);
-                double markerDistance = calculateDistance(lastLat, lastLong, markerLat, markerLong);
-                ImageView locationIconView = markerView.get(i);
-                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
-                layoutParams.circleAngle = bearingAngle-deg;
-                //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
-                locationIconView.setLayoutParams(layoutParams);
-                if(markerDistance < 33*DEFAULT_ZOOM) {
-                    locationIconView.setVisibility(View.INVISIBLE);
-                } else {
-                    locationIconView.setVisibility(View.VISIBLE);
-                }
-            }
-        }
     }
 
     public void onClickCenter(View v) {
@@ -413,13 +366,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     double input_longitude = Double.parseDouble(text_longitude);
                     dialog.dismiss();
                     //correct long/lat values
-                    if(-90 <= input_latitude && input_latitude <= 90 && -180 <= input_longitude && input_longitude <= 180) {
+                    if(inputValidation(input_latitude, input_longitude)) {
                         Toast.makeText(locationPopupView.getContext(), "Saved!", Toast.LENGTH_LONG).show();
                         Marker inputLocationMarker = map.addMarker(new MarkerOptions()
                                 .position(new LatLng(input_latitude, input_longitude))
                                 .title(text_name));
+                        inputLocationMarker.showInfoWindow();
                         markerList.add(inputLocationMarker);
-                        addNew();
+                        addNewView(text_name);
                         //insert new markers to database
                         LocationItem newLoc = new LocationItem(input_latitude, input_longitude, text_name);
                         dao.insert(newLoc);
@@ -440,45 +394,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public double calculateBearingAngle(double lat1, double long1, double lat2, double long2) {
-        double dLong = Math.toRadians(long2 - long1);
-        double lat1R = Math.toRadians(lat1);
-        double lat2R = Math.toRadians(lat2);
-        double y = Math.sin(dLong) * Math.cos(lat2R);
-        double x = Math.cos(lat1R) * Math.sin(lat2R) - Math.sin(lat1R) * Math.cos(lat2R) * Math.cos(dLong);
-        double radian = Math.atan2(y, x);
-        double bearing = Math.toDegrees(radian);
-        bearing = (bearing + 360) % 360;
-        return bearing;
+    public boolean inputValidation(double input_latitude, double input_longitude) {
+        if(-90 <= input_latitude && input_latitude <= 90 && -180 <= input_longitude && input_longitude <= 180) {
+            return true;
+        } else {
+            return  false;
+        }
     }
 
-    public double calculateDistance(double lat1, double long1, double lat2, double long2) {
-        double R = 6378137; // Earth’s mean radius in meter
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLong = Math.toRadians(long2 - long1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLong / 2) * Math.sin(dLong / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double d = R * c;
-        return d; // returns the distance in meter
-    }
+    public void addNewView(String name) {
 
-    public void addNew() {
-        ImageView locationIconView = findViewById(R.id.locationIcon);
-        ImageView view = new ImageView(this);
-        view.setImageResource(R.drawable.baseline_location_on_24);
         ConstraintLayout.LayoutParams newLayoutParams = new ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.WRAP_CONTENT,
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
         );
         newLayoutParams.circleConstraint = R.id.compass;
-        final float scale = getResources().getDisplayMetrics().density;
-        int pixels = (int) (150 * scale + 0.5f);
-        newLayoutParams.circleRadius = pixels;
+        newLayoutParams.circleRadius = DpSpPxConversion.calculatePixels(150, this);
         newLayoutParams.circleAngle = bearingAngle-azimuth;
-        view.setLayoutParams(newLayoutParams);
-        constraintLayout.addView(view);
-        markerView.add(view);
+
+        View newLayout = getLayoutInflater().inflate(R.layout.label_with_icon, null);
+        newLayout.setLayoutParams(newLayoutParams);
+        TextView editText = (TextView) newLayout.findViewById(R.id.myImageViewText);
+        //ImageView editImage = (ImageView) newLayout.findViewById(R.id.myImageView); Use when trying to change icon for different labels
+
+        editText.setText(name);
+
+        constraintLayout.addView(newLayout);
+        markerView.add(newLayout);
     }
+
 }
