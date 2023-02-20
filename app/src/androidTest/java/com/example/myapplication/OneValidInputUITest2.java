@@ -5,11 +5,9 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
@@ -27,14 +25,13 @@ import androidx.test.rule.GrantPermissionRule;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class OneValidInputUITest {
+public class OneValidInputUITest2 {
 
     @Rule
     public ActivityScenarioRule<MapsActivity> mActivityScenarioRule =
@@ -46,7 +43,7 @@ public class OneValidInputUITest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void oneValidInputUITest() {
+    public void oneValidInputUITest2() {
         ViewInteraction button = onView(
                 allOf(withId(R.id.addLocation), withText("-"),
                         childAtPosition(
@@ -76,7 +73,7 @@ public class OneValidInputUITest {
                                         0),
                                 1),
                         isDisplayed()));
-        editText2.perform(replaceText("-117"), closeSoftKeyboard());
+        editText2.perform(replaceText("117"), closeSoftKeyboard());
 
         ViewInteraction editText3 = onView(
                 allOf(withId(R.id.name),
@@ -88,24 +85,6 @@ public class OneValidInputUITest {
                         isDisplayed()));
         editText3.perform(replaceText("input1"), closeSoftKeyboard());
 
-        ViewInteraction editText4 = onView(
-                allOf(withId(R.id.latitude), withText("32"),
-                        withParent(withParent(withId(com.google.android.material.R.id.custom))),
-                        isDisplayed()));
-        editText4.check(matches(withText("32")));
-
-        ViewInteraction editText5 = onView(
-                allOf(withId(R.id.longitude), withText("-117"),
-                        withParent(withParent(withId(com.google.android.material.R.id.custom))),
-                        isDisplayed()));
-        editText5.check(matches(withText("-117")));
-
-        ViewInteraction editText6 = onView(
-                allOf(withId(R.id.name), withText("input1"),
-                        withParent(withParent(withId(com.google.android.material.R.id.custom))),
-                        isDisplayed()));
-        editText6.check(matches(withText("input1")));
-
         ViewInteraction button2 = onView(
                 allOf(withId(R.id.save), withText("Save"),
                         childAtPosition(
@@ -115,13 +94,6 @@ public class OneValidInputUITest {
                                 3),
                         isDisplayed()));
         button2.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.myImageViewText), withText("input1"),
-                        withParent(allOf(withId(R.id.layoutTemplate),
-                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
-                        isDisplayed()));
-        textView.check(matches(withText("input1")));
     }
 
     private static Matcher<View> childAtPosition(

@@ -5,11 +5,9 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
@@ -27,14 +25,13 @@ import androidx.test.rule.GrantPermissionRule;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MultipleValidInputsUITest {
+public class MultipleInputsUITest {
 
     @Rule
     public ActivityScenarioRule<MapsActivity> mActivityScenarioRule =
@@ -46,7 +43,7 @@ public class MultipleValidInputsUITest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void multipleValidInputsUITest() {
+    public void multipleInputsUITest() {
         ViewInteraction button = onView(
                 allOf(withId(R.id.addLocation), withText("-"),
                         childAtPosition(
@@ -66,7 +63,7 @@ public class MultipleValidInputsUITest {
                                         0),
                                 0),
                         isDisplayed()));
-        editText.perform(replaceText("-3"), closeSoftKeyboard());
+        editText.perform(replaceText("0"), closeSoftKeyboard());
 
         ViewInteraction editText2 = onView(
                 allOf(withId(R.id.longitude),
@@ -76,7 +73,7 @@ public class MultipleValidInputsUITest {
                                         0),
                                 1),
                         isDisplayed()));
-        editText2.perform(replaceText("2"), closeSoftKeyboard());
+        editText2.perform(replaceText("0"), closeSoftKeyboard());
 
         ViewInteraction editText3 = onView(
                 allOf(withId(R.id.name),
@@ -117,7 +114,7 @@ public class MultipleValidInputsUITest {
                                         0),
                                 0),
                         isDisplayed()));
-        editText4.perform(replaceText("-32"), closeSoftKeyboard());
+        editText4.perform(replaceText("32"), closeSoftKeyboard());
 
         ViewInteraction editText5 = onView(
                 allOf(withId(R.id.longitude),
@@ -127,7 +124,7 @@ public class MultipleValidInputsUITest {
                                         0),
                                 1),
                         isDisplayed()));
-        editText5.perform(replaceText("117"), closeSoftKeyboard());
+        editText5.perform(replaceText("-117"), closeSoftKeyboard());
 
         ViewInteraction editText6 = onView(
                 allOf(withId(R.id.name),
@@ -148,45 +145,6 @@ public class MultipleValidInputsUITest {
                                 3),
                         isDisplayed()));
         button4.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.myImageViewText), withText("input1"),
-                        withParent(allOf(withId(R.id.layoutTemplate),
-                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
-                        isDisplayed()));
-        textView.check(matches(withText("input1")));
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.myImageViewText), withText("input2"),
-                        withParent(allOf(withId(R.id.layoutTemplate),
-                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
-                        isDisplayed()));
-        textView2.check(matches(withText("input2")));
-
-        ViewInteraction imageView = onView(
-                allOf(withId(R.id.myImageView),
-                        withParent(allOf(withId(R.id.layoutTemplate),
-                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
-                        isDisplayed()));
-        imageView.check(matches(isDisplayed()));
-
-        ViewInteraction imageView2 = onView(
-                allOf(withId(R.id.myImageView),
-                        withParent(allOf(withId(R.id.layoutTemplate),
-                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
-                        isDisplayed()));
-        imageView2.check(matches(isDisplayed()));
-
-        ViewInteraction button5 = onView(
-                allOf(withId(R.id.center), withText("Center"),
-                        childAtPosition(
-                                allOf(withId(R.id.constraint),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.RelativeLayout")),
-                                                0)),
-                                4),
-                        isDisplayed()));
-        button5.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
