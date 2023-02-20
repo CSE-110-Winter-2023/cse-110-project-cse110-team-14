@@ -135,6 +135,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
+     * onPause Method
+     * Unregisters all SensorManagers when app is paused
+     */
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    /**
+     * onResume Method
+     * Add the SensorManagers for use.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    /**
+     * onDestroy Method
+     * Saves the database before app is killed
+     */
+    @Override
+    protected void onDestroy(){
+        db.makeDatabase(getApplicationContext());
+        super.onDestroy();
+    }
+
+    /**
      * onMapReady Method
      * Manipulates the map after ready for use.
      */
@@ -158,39 +191,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             markerList.add(inputLocationMarker);
             addNewView(l.label);
         }
-    }
-
-    /**
-     * onResume Method
-     * Add the SensorManagers for use.
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_GAME);
-    }
-
-    /**
-     * onPause Method
-     * Unregisters all SensorManagers when app is paused
-     */
-    @Override
-    protected void onPause(){
-        super.onPause();
-        mSensorManager.unregisterListener(this);
-    }
-
-    /**
-     * onDestroy Method
-     * Saves the database before app is killed
-     */
-    @Override
-    protected void onDestroy(){
-        db.makeDatabase(getApplicationContext());
-        super.onDestroy();
     }
 
     /**
