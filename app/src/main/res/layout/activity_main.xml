@@ -23,34 +23,16 @@
         android:id="@+id/circle2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="70dp"
         android:background="@drawable/ring"
-        android:text=""
         app:layout_constraintBottom_toBottomOf="@id/circle1"
         app:layout_constraintEnd_toEndOf="@id/circle1"
         app:layout_constraintStart_toStartOf="@id/circle1"
         app:layout_constraintTop_toTopOf="@id/circle1" />
 
-
-    <Button
-        android:id="@+id/zoomIn"
-        android:layout_width="55dp"
-        android:layout_height="48dp"
-        android:text="+"
-        tools:layout_editor_absoluteX="336dp"
-        tools:layout_editor_absoluteY="607dp" />
-
     <TextView
         android:id="@+id/circle3"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="70dp"
         android:background="@drawable/ring"
         android:text=""
         app:layout_constraintBottom_toBottomOf="@id/circle2"
@@ -68,4 +50,31 @@
         app:layout_constraintEnd_toEndOf="@id/circle3"
         app:layout_constraintStart_toStartOf="@id/circle3"
         app:layout_constraintTop_toTopOf="@id/circle3" />
+
+    <Button
+        android:id="@+id/zoomIn"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:text="+"
+        android:onClick="onZoomInClicked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.943"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
+
+    <Button
+        android:id="@+id/zoomOut"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:text="-"
+        android:onClick="onZoomOutClicked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
