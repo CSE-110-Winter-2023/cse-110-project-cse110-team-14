@@ -7,6 +7,9 @@ import android.os.Bundle;
 import com.example.myapplication.R;
 
 public class MainActivity extends AppCompatActivity {
+    private int zoomLevel2 = 90;
+    private int zoomLevel3 = 70;
+    private int zoomLevel4 = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
