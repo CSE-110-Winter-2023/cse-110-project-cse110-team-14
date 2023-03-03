@@ -2,8 +2,6 @@ package com.example;
 
 import static org.junit.Assert.assertEquals;
 
-import com.example.myapplication.DpSpPxConversion;
-import com.example.myapplication.MapsActivity;
 import com.example.myapplication.UpdateIcon;
 
 import org.junit.Test;

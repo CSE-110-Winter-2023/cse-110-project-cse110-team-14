@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.model;
 
 import android.content.Context;
 
@@ -25,7 +25,7 @@ public abstract class LocationDatabase extends RoomDatabase {
         return singleton;
     }
 
-    static LocationDatabase makeDatabase(Context context){
+    public static LocationDatabase makeDatabase(Context context){
         return Room.databaseBuilder(context, LocationDatabase.class, "location_app.db")
                 .allowMainThreadQueries()
                 .addCallback(new Callback() {
