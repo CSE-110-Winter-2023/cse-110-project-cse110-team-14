@@ -97,6 +97,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int total_marker_existed = 0;
 
 
+    /**
+     * OnCreate Method
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,13 +135,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * onPause Method
+     * Unregisters all SensorManagers when app is paused
+     */
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    /**
+     * onResume Method
+     * Add the SensorManagers for use.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    /**
+     * onDestroy Method
+     * Saves the database before app is killed
+     */
+    @Override
+    protected void onDestroy(){
+        db.makeDatabase(getApplicationContext());
+        super.onDestroy();
+    }
+
+    /**
+     * onMapReady Method
+     * Manipulates the map after ready for use.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -149,9 +180,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-        /** Add a marker in Sydney and move the camera **/
 
-        // curr pos (32.87, -117.22)
         List<LocationItem> locItems = dao.getAll();
         for(LocationItem l: locItems){
             LatLng newLatLng = new LatLng(l.longitude, l.latitude);
@@ -164,33 +193,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_GAME);
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        mSensorManager.unregisterListener(this);
-    }
-
-    @Override
-    protected void onDestroy(){
-        db.makeDatabase(getApplicationContext());
-        super.onDestroy();
-    }
-
+    /**
+     * getLocationPermission Method
+     * Request location permission, so that we can get the location of the
+     * device. The result of the permission request is handled by a callback,
+     * onRequestPermissionsResult.
+     */
     private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -203,6 +212,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * onRequestPermissionsResult Method
+     * Handle request for permission
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -220,6 +233,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         updateLocationUI();
     }
 
+    /**
+     * onRequestPermissionsResult Method
+     * Handle request for permission
+     */
     private void updateLocationUI() {
         if (map == null) {
             return;
@@ -239,6 +256,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * getDeviceLocation Method
+     * Checks the current location of the user.
+     * Uses this data to center the compass at user's location.
+     */
     private void getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -273,7 +295,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
+    /**
+     * onSensorChanged Method
+     * Checks for rotations of the device.
+     * Uses the sensors to rotate the map and the UI accordingly.
+     */
     @SuppressLint("MissingPermission")
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -311,7 +337,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {}
 
-    // below are two mock methods for UI testing
+    /**
+     * onClickMock Method
+     * onClick method for the mock UI button.
+     * Unregisters the sensors so that we can manually
+     * rotate the UI with the inputted degrees.
+     */
     public void onClickMock(View v) {
         String degree = edit.getText().toString();
         float deg = Float.valueOf(degree);
@@ -329,6 +360,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * onClickCenter Method
+     * onClick method for the center button.
+     * Centers the map again using the SensorManagers.
+     */
     public void onClickCenter(View v) {
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
                 SensorManager.SENSOR_DELAY_GAME);
@@ -336,11 +372,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 SensorManager.SENSOR_DELAY_GAME);
     }
 
+    /**
+     * onClickDBDelete Method
+     * onClick method for the DB delete button.
+     * Deletes all the saved location points.
+     */
     public void onClickDBDelete(View v) {
         dao.nukeTable();
         Toast.makeText(this, "Deleted all Saved Locations", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * createNewLocationDialog Method
+     * Gets the location input from the user,
+     * checks for validity and displays it on the Compass.
+     */
     public void createNewLocationDialog(){
         dialogBuilder = new AlertDialog.Builder(this);
         final View locationPopupView = getLayoutInflater().inflate(R.layout.popup, null);
@@ -394,14 +440,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    /**
+     * inputValidation Method
+     * Checks if given location input is valid.
+     */
     public boolean inputValidation(double input_latitude, double input_longitude) {
         if(-90 <= input_latitude && input_latitude <= 90 && -180 <= input_longitude && input_longitude <= 180) {
             return true;
         } else {
-            return  false;
+            return false;
         }
     }
 
+    /**
+     * addNewView Method
+     * Adds the label for locations out of the compass range.
+     */
     public void addNewView(String name) {
 
         ConstraintLayout.LayoutParams newLayoutParams = new ConstraintLayout.LayoutParams(

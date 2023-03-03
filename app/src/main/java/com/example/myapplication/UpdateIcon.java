@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class UpdateIcon {
 
+    /**
+     * updateIconOrientation Method
+     */
     public static void updateIconOrientation(ArrayList<Marker> markerList, ArrayList<View> markerView, float azimuth, double lastLat, double lastLong, final int DEFAULT_ZOOM) {
         if(markerList.size() > 0) {
             for(int i = 0; i < markerList.size(); i++) {
@@ -33,6 +36,9 @@ public class UpdateIcon {
         }
     }
 
+    /**
+     * calculateBearingAngle Method
+     */
     public static double calculateBearingAngle(double lat1, double long1, double lat2, double long2) {
         double dLong = Math.toRadians(long2 - long1);
         double lat1R = Math.toRadians(lat1);
