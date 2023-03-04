@@ -1,10 +1,6 @@
 package com.example.myapplication;
 
-import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class ZoomObserver {
@@ -18,7 +14,6 @@ public class ZoomObserver {
     private int zoomLevel;
     private int defaultZoom = 2;
 
-
     public ZoomObserver(TextView c1, TextView c2, TextView c3, TextView c4){
         this.c1 = c1;
         this.c2 = c2;
@@ -29,12 +24,11 @@ public class ZoomObserver {
         this.setText();
     }
     public void zoomIn(){
-        if(zoomLevel != 1){
-            this.setZoomLevel(this.zoomLevel-1);
+        if(zoomLevel != 1) {
+            this.setZoomLevel(this.zoomLevel - 1);
             this.setRings();
             this.setText();
         }
-        return;
     }
 
     public void zoomOut(){
@@ -43,7 +37,6 @@ public class ZoomObserver {
             this.setRings();
             this.setText();
         }
-        return;
     }
 
     private void setRings(){
@@ -68,23 +61,23 @@ public class ZoomObserver {
 
     private void setText(){
         if(this.zoomLevel == 1){
-            c1.setText("\n" + "        1mi");
+            c1.setText("1mi");
             c2.setText("");
             c3.setText("");
             c4.setText("");
         } else if (this.zoomLevel == 2) {
-            c1.setText("\n" + "        10mi");
-            c2.setText("  1mi");
+            c1.setText("10mi");
+            c2.setText("1mi");
             c3.setText("");
             c4.setText("");
         } else if (this.zoomLevel == 3) {
-            c1.setText("\n" + "        500mi");
-            c2.setText("   10mi");
-            c3.setText("");
+            c1.setText("500mi");
+            c2.setText("10mi");
+            c3.setText("1mi");
             c4.setText("");
         } else {
-            c1.setText("\n" + "     1000mi+");
-            c2.setText("\n" + "  500mi");
+            c1.setText("1000mi+");
+            c2.setText("500mi");
             c3.setText("10mi");
             c4.setText("");
         }
