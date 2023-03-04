@@ -1,15 +1,12 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,10 +18,8 @@ import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.room.Room;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,20 +27,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.MapsActivity;
+import com.example.myapplication.DpSpPxConversion;
+import com.example.myapplication.R;
+import com.example.myapplication.UpdateCameraLocation;
+import com.example.myapplication.UpdateIcon;
+import com.example.myapplication.model.LocationDatabase;
+import com.example.myapplication.model.LocationItem;
+import com.example.myapplication.model.LocationItemDao;
+import com.example.myapplication.setOrientation;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -53,10 +53,6 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 import com.example.myapplication.databinding.ActivityMapsBinding;
 
-import org.w3c.dom.Text;
-
-import java.security.cert.PKIXCertPathBuilderResult;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 

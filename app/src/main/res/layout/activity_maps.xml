@@ -27,7 +27,7 @@
             app:layout_constraintLeft_toLeftOf="@id/mapCircle"
             app:layout_constraintRight_toRightOf="@id/mapCircle"
             app:layout_constraintTop_toTopOf="@id/mapCircle"
-            tools:context=".MapsActivity"
+            tools:context=".activity.MapsActivity"
             tools:layout="@layout/support_simple_spinner_dropdown_item" />
 
         <ImageView

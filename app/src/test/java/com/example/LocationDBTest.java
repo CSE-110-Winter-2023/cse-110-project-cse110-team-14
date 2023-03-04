@@ -11,9 +11,9 @@ import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.myapplication.LocationDatabase;
-import com.example.myapplication.LocationItem;
-import com.example.myapplication.LocationItemDao;
+import com.example.myapplication.model.LocationDatabase;
+import com.example.myapplication.model.LocationItem;
+import com.example.myapplication.model.LocationItemDao;
 
 import org.junit.After;
 import org.junit.Before;
