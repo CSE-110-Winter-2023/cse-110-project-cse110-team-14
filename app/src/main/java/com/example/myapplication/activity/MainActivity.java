@@ -3,6 +3,7 @@ package com.example.myapplication.activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Button zoomOut;
     private ZoomObserver zoom;
     private UIRotator ui;
-
+    private Button addFriend;
 
 
     @Override
@@ -39,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
         this.setRingUI();
         ui = new UIRotator(this);
+
+        addFriend = findViewById(R.id.addFriendBtn);
+        addFriend.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
