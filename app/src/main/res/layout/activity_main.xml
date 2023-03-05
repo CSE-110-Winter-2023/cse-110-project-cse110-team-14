@@ -7,77 +7,84 @@
     tools:context=".activity.MainActivity">
 
 
-    <TextView
-        android:id="@+id/circle1"
-        android:layout_width="370dp"
-        android:layout_height="400dp"
-        android:background="@drawable/ring"
-        android:contentDescription="BIGGEST ONE"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/circle2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ring"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@id/circle1"
-        app:layout_constraintEnd_toEndOf="@id/circle1"
-        app:layout_constraintStart_toStartOf="@id/circle1"
-        app:layout_constraintTop_toTopOf="@id/circle1" />
 
-    <TextView
-        android:id="@+id/circle3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ring"
-        android:text=""
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@id/circle2"
-        app:layout_constraintEnd_toEndOf="@id/circle2"
-        app:layout_constraintStart_toStartOf="@id/circle2"
-        app:layout_constraintTop_toTopOf="@id/circle2" />
+        <TextView
+            android:id="@+id/circle1"
+            android:layout_width="370dp"
+            android:layout_height="400dp"
+            android:background="@drawable/ring"
+            android:contentDescription="BIGGEST ONE"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/circle4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/ring"
-        android:text=""
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@id/circle3"
-        app:layout_constraintEnd_toEndOf="@id/circle3"
-        app:layout_constraintStart_toStartOf="@id/circle3"
-        app:layout_constraintTop_toTopOf="@id/circle3" />
+        <TextView
+            android:id="@+id/circle2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/ring"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@id/circle1"
+            app:layout_constraintEnd_toEndOf="@id/circle1"
+            app:layout_constraintStart_toStartOf="@id/circle1"
+            app:layout_constraintTop_toTopOf="@id/circle1" />
 
-    <Button
-        android:id="@+id/zoomIn"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:text="+"
-        android:onClick="onZoomInClicked"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.943"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+        <TextView
+            android:id="@+id/circle3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/ring"
+            android:text=""
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@id/circle2"
+            app:layout_constraintEnd_toEndOf="@id/circle2"
+            app:layout_constraintStart_toStartOf="@id/circle2"
+            app:layout_constraintTop_toTopOf="@id/circle2" />
 
-    <Button
-        android:id="@+id/zoomOut"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:text="-"
-        android:onClick="onZoomOutClicked"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.747"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+        <TextView
+            android:id="@+id/circle4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/ring"
+            android:text=""
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@id/circle3"
+            app:layout_constraintEnd_toEndOf="@id/circle3"
+            app:layout_constraintStart_toStartOf="@id/circle3"
+            app:layout_constraintTop_toTopOf="@id/circle3" />
+
+        <Button
+            android:id="@+id/zoomIn"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:onClick="onZoomInClicked"
+            android:text="+"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.943"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.976" />
+
+        <Button
+            android:id="@+id/zoomOut"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:onClick="onZoomOutClicked"
+            android:text="-"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.747"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.976" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

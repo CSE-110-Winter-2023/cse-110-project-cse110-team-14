@@ -2,6 +2,7 @@ package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 
 import android.content.SharedPreferences;
@@ -15,14 +16,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.CheckVisibility;
+import com.example.myapplication.DpSpPxConversion;
 import com.example.myapplication.Friend;
 import com.example.myapplication.LocationService;
 import com.example.myapplication.OrientationService;
 import com.example.myapplication.R;
 import com.example.myapplication.ServerAPI;
 import com.example.myapplication.UIRotator;
+import com.example.myapplication.UpdateIcon;
 import com.example.myapplication.ZoomObserver;
 import com.example.myapplication.model.LocationItem;
+import com.example.myapplication.model.MeterToMile;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -40,14 +45,20 @@ public class MainActivity extends AppCompatActivity {
     private Button zoomOut;
     private ZoomObserver zoom;
     private UIRotator ui;
-    private ArrayList<Friend> friends;
+    private ArrayList<Friend> friends = new ArrayList<>();
     private OrientationService orientationService;
     private LocationService locationService;
     private float myOrientation;
-    private LatLng myLocation;
+    private LatLng myLocation = new LatLng(-30, 117);
     private ScheduledExecutorService executor;
     private ServerAPI client;
 
+
+    private ArrayList<View> friendsView = new ArrayList<>();
+    private float bearingAngle;
+    private float azimuth = 0f;
+
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +74,18 @@ public class MainActivity extends AppCompatActivity {
         locationService = LocationService.singleton(this);
         this.reobserveLocation();
 
+        this.constraintLayout = findViewById(R.id.constraintLayout);
+
+        Friend f1 = new Friend("3", "abc", 30, -117, 1);
+        friends.add(f1);
+
         client = ServerAPI.provide();
 
         executor = Executors.newScheduledThreadPool(1);
 
+        for (int i = 0; i < friends.size(); ++i) {
+            addNewView(friends.get(i).getLabel());
+        }
         // Schedule the RequestThread task to run every 3 seconds
         executor.scheduleAtFixedRate(new RequestThread(), 0, 3, TimeUnit.SECONDS);
     }
@@ -146,14 +165,47 @@ public class MainActivity extends AppCompatActivity {
     private void onOrientationChanged(Float orientation) {
         myOrientation = orientation;
         for(int i = 0; i < friends.size(); i++) {
-            friends.get(i).calculateRelativeAngle(myLocation.latitude, myLocation.longitude, orientation);
+            double angle = friends.get(i).calculateRelativeAngle(myLocation.latitude, myLocation.longitude, orientation);
+            View locationIconView = friendsView.get(i);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
+            layoutParams.circleAngle = (float)angle;
+            //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
+            locationIconView.setLayoutParams(layoutParams);
         }
     }
 
     private void onLocationChanged(Pair<Double, Double> latLong) {
         myLocation = new LatLng(latLong.first, latLong.second);
         for(int i = 0; i < friends.size(); i++) {
-            friends.get(i).calculateDistance(myLocation);
+            float distance = (float)friends.get(i).calculateDistance(myLocation);
+            View locationIconView = friendsView.get(i);
+            if (!CheckVisibility.checkDistance(zoom.getZoomLevel(),MeterToMile.toMile(distance))) {
+                locationIconView.setVisibility(View.INVISIBLE);
+            }
+            else {
+                locationIconView.setVisibility(View.VISIBLE);
+            }
         }
+    }
+
+    public void addNewView(String name) {
+
+        ConstraintLayout.LayoutParams newLayoutParams = new ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+        );
+        newLayoutParams.circleConstraint = R.id.circle1;
+        newLayoutParams.circleRadius = DpSpPxConversion.calculatePixels(150, this);
+        newLayoutParams.circleAngle = bearingAngle-azimuth;
+
+        View newLayout = getLayoutInflater().inflate(R.layout.label_with_icon, null);
+        newLayout.setLayoutParams(newLayoutParams);
+        TextView editText = (TextView) newLayout.findViewById(R.id.myImageViewText);
+        //ImageView editImage = (ImageView) newLayout.findViewById(R.id.myImageView); Use when trying to change icon for different labels
+
+        editText.setText(name);
+
+        constraintLayout.addView(newLayout);
+        friendsView.add(newLayout);
     }
 }

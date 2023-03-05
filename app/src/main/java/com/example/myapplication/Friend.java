@@ -59,7 +59,7 @@ public class Friend {
         return this.version;
     }
 
-    public void calculateDistance(LatLng location) {
+    public double calculateDistance(LatLng location) {
         double R = 6378137; // Earth’s mean radius in meter
         double dLat = Math.toRadians(latitude - location.latitude);
         double dLong = Math.toRadians(longitude - location.longitude);
@@ -68,9 +68,10 @@ public class Friend {
                         Math.sin(dLong / 2) * Math.sin(dLong / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         distance = R * c;
+        return distance;
     }
 
-    public void calculateRelativeAngle(double lat, double lng, float azimuth) {
+    public double calculateRelativeAngle(double lat, double lng, float azimuth) {
         double dLong = Math.toRadians(longitude - lng);
         double lat1R = Math.toRadians(lat);
         double lat2R = Math.toRadians(latitude);
@@ -80,5 +81,6 @@ public class Friend {
         double bearing = Math.toDegrees(radian);
         bearing = (bearing + 360) % 360;
         relativeAngle = bearing - azimuth;
+        return relativeAngle;
     }
 }
