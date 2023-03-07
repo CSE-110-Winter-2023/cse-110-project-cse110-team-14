@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import com.example.myapplication.model.MeterToMile;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Friend {
@@ -68,6 +69,7 @@ public class Friend {
                         Math.sin(dLong / 2) * Math.sin(dLong / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         distance = R * c;
+        distance = MeterToMile.toMile(distance); //meter to mile
         return distance;
     }
 

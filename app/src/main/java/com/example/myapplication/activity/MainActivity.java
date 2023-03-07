@@ -13,12 +13,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.CheckVisibility;
+import com.example.myapplication.DistanceToDp;
 import com.example.myapplication.DpSpPxConversion;
 import com.example.myapplication.Friend;
+import com.example.myapplication.FriendViewAdaptor;
 import com.example.myapplication.LocationService;
 import com.example.myapplication.OrientationService;
 import com.example.myapplication.R;
@@ -52,13 +55,12 @@ public class MainActivity extends AppCompatActivity {
     private LatLng myLocation = new LatLng(-30, 117);
     private ScheduledExecutorService executor;
     private ServerAPI client;
+    private FriendViewAdaptor viewAdaptor;
 
 
-    private ArrayList<View> friendsView = new ArrayList<>();
     private float bearingAngle;
     private float azimuth = 0f;
 
-    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,18 +76,23 @@ public class MainActivity extends AppCompatActivity {
         locationService = LocationService.singleton(this);
         this.reobserveLocation();
 
-        this.constraintLayout = findViewById(R.id.constraintLayout);
+        viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
 
-        Friend f1 = new Friend("3", "abc", 30, -117, 1);
+        //for testing
+        Friend f1 = new Friend("42424242", "abc", 30, -117, 1);
+        Friend f2 = new Friend("38383838", "bcd", 25, -117, 1);
         friends.add(f1);
+        friends.add(f2);
+        for (int i = 0; i < friends.size(); ++i) {
+            viewAdaptor.addNewView(friends.get(i));
+        }
+
 
         client = ServerAPI.provide();
 
         executor = Executors.newScheduledThreadPool(1);
 
-        for (int i = 0; i < friends.size(); ++i) {
-            addNewView(friends.get(i).getLabel());
-        }
+
         // Schedule the RequestThread task to run every 3 seconds
         executor.scheduleAtFixedRate(new RequestThread(), 0, 3, TimeUnit.SECONDS);
     }
@@ -166,46 +173,17 @@ public class MainActivity extends AppCompatActivity {
         myOrientation = orientation;
         for(int i = 0; i < friends.size(); i++) {
             double angle = friends.get(i).calculateRelativeAngle(myLocation.latitude, myLocation.longitude, orientation);
-            View locationIconView = friendsView.get(i);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
-            layoutParams.circleAngle = (float)angle;
-            //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
-            locationIconView.setLayoutParams(layoutParams);
+            viewAdaptor.changeAngle(i, angle);
         }
     }
 
     private void onLocationChanged(Pair<Double, Double> latLong) {
         myLocation = new LatLng(latLong.first, latLong.second);
         for(int i = 0; i < friends.size(); i++) {
-            float distance = (float)friends.get(i).calculateDistance(myLocation);
-            View locationIconView = friendsView.get(i);
-            if (!CheckVisibility.checkDistance(zoom.getZoomLevel(),MeterToMile.toMile(distance))) {
-                locationIconView.setVisibility(View.INVISIBLE);
-            }
-            else {
-                locationIconView.setVisibility(View.VISIBLE);
-            }
+            double distance = friends.get(i).calculateDistance(myLocation);
+            viewAdaptor.changeDistance(i, distance, zoom.getZoomLevel());
         }
     }
 
-    public void addNewView(String name) {
 
-        ConstraintLayout.LayoutParams newLayoutParams = new ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-        );
-        newLayoutParams.circleConstraint = R.id.circle1;
-        newLayoutParams.circleRadius = DpSpPxConversion.calculatePixels(150, this);
-        newLayoutParams.circleAngle = bearingAngle-azimuth;
-
-        View newLayout = getLayoutInflater().inflate(R.layout.label_with_icon, null);
-        newLayout.setLayoutParams(newLayoutParams);
-        TextView editText = (TextView) newLayout.findViewById(R.id.myImageViewText);
-        //ImageView editImage = (ImageView) newLayout.findViewById(R.id.myImageView); Use when trying to change icon for different labels
-
-        editText.setText(name);
-
-        constraintLayout.addView(newLayout);
-        friendsView.add(newLayout);
-    }
 }
