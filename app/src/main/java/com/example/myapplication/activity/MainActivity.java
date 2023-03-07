@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private Button zoomOut;
     private ZoomObserver zoom;
     private UIRotator ui;
+
     private ArrayList<Friend> friends = new ArrayList<>();
     private OrientationService orientationService;
     private LocationService locationService;
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private float bearingAngle;
     private float azimuth = 0f;
 
+    private Button addFriend;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,12 @@ public class MainActivity extends AppCompatActivity {
 
         this.setRingUI();
         ui = new UIRotator(this);
+        
+        addFriend = findViewById(R.id.addFriendBtn);
+        addFriend.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
+            startActivity(intent);
+        });
 
         orientationService = OrientationService.singleton(this);
         this.reobserveOrientation();
