@@ -36,6 +36,28 @@ public class UpdateIcon {
         }
     }
 
+    public static void updateIconOrientation1(ArrayList<Friend> friendsList, ArrayList<View> friendsView, float azimuth, double lastLat, double lastLong, final int DEFAULT_ZOOM) {
+        if(friendsList.size() > 0) {
+            for(int i = 0; i < friendsList.size(); i++) {
+                Friend curFriend = friendsList.get(i);
+                double friendLat = curFriend.getLatitude();
+                double friendLong = curFriend.getLongitude();
+                float bearingAngle = (float)calculateBearingAngle(lastLat, lastLong, friendLat, friendLong);
+                double markerDistance = calculateDistance(lastLat, lastLong, friendLat, friendLong);
+                View locationIconView = friendsView.get(i);
+                ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) locationIconView.getLayoutParams();
+                layoutParams.circleAngle = bearingAngle-azimuth;
+                //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
+                locationIconView.setLayoutParams(layoutParams);
+                if(markerDistance < 33*DEFAULT_ZOOM) {
+                    locationIconView.setVisibility(View.INVISIBLE);
+                } else {
+                    locationIconView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
     /**
      * calculateBearingAngle Method
      */
