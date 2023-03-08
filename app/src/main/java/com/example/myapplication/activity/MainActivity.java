@@ -60,14 +60,10 @@ public class MainActivity extends AppCompatActivity {
     private ScheduledExecutorService executor;
     private ServerAPI client;
     private FriendViewAdaptor viewAdaptor;
-
+    private Button addFriend;
 
     private float bearingAngle;
     private float azimuth = 0f;
-
-    private Button addFriend;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
     private void setUp(){
         ui = new UIRotator(this);
         open = new FirstOpened(this, this);
-        TextView uid = findViewById(R.id.uid);
-        uid.setText("UID: " + open.getUID());
+        //TextView uid = findViewById(R.id.uid);
+        //uid.setText("UID: " + open.getUID());
 
         orientationService = OrientationService.singleton(this);
         locationService = LocationService.singleton(this);
