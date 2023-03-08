@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.myapplication.CheckVisibility;
 import com.example.myapplication.DistanceToDp;
 import com.example.myapplication.DpSpPxConversion;
+import com.example.myapplication.FirstOpened;
 import com.example.myapplication.Friend;
 import com.example.myapplication.FriendViewAdaptor;
 import com.example.myapplication.LocationService;
@@ -45,11 +46,12 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
+    final String START = "Start";
     private Button zoomIn;
     private Button zoomOut;
     private ZoomObserver zoom;
     private UIRotator ui;
-
+    private FirstOpened open;
     private ArrayList<Friend> friends = new ArrayList<>();
     private OrientationService orientationService;
     private LocationService locationService;
@@ -127,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUp(){
         ui = new UIRotator(this);
+        open = new FirstOpened(this, this);
+        TextView uid = findViewById(R.id.uid);
+        uid.setText("UID: " + open.getUID());
 
         orientationService = OrientationService.singleton(this);
         locationService = LocationService.singleton(this);
