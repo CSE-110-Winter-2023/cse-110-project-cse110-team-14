@@ -1,5 +1,6 @@
 package com.example.myapplication.activity;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -196,5 +197,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @VisibleForTesting
+    public int getZoomLevel() {
+        return zoom.getZoomLevel();
+    }
 
 }
