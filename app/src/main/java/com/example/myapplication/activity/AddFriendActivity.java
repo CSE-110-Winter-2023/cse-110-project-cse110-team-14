@@ -37,12 +37,6 @@ public class AddFriendActivity extends AppCompatActivity {
             String name = mEditUID.getText().toString();
             if (!name.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "UID added", Toast.LENGTH_SHORT).show();
-                Bundle args = intent.getBundleExtra("BUNDLE");
-                ArrayList<Friend> friends = (ArrayList<Friend>) args.getSerializable("friend");
-                FriendViewAdaptor viewAdaptor = (FriendViewAdaptor) args.getSerializable("view");
-                Friend newFriend = new Friend(name, "null", 0, 0, 1);
-                friends.add(newFriend);
-                viewAdaptor.addNewView(newFriend);
                 finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Please enter a UID", Toast.LENGTH_SHORT).show();

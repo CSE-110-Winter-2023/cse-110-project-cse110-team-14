@@ -85,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
         this.scheduleRate(0,1);
     }
 
-    }
-
     private class RequestThread implements Runnable {
         @Override
         public void run() {
