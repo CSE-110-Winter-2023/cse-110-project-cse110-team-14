@@ -7,23 +7,51 @@
     tools:context=".activity.MainActivity">
 
 
+    <!--<TextView
+        android:id="@+id/uid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="100dp"
+        android:text="uid: uh439g49309d903h9"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
+
+        <TextView
+            android:id="@+id/uidView"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="UID: iuholiuh89237g89"
+            android:gravity="center"
+            app:layout_constraintBottom_toStartOf="@+id/circle1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
 
         <TextView
             android:id="@+id/circle1"
-            android:layout_width="370dp"
-            android:layout_height="400dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:background="@drawable/ring"
             android:contentDescription="BIGGEST ONE"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/uidView"
+            />
 
         <TextView
             android:id="@+id/circle2"

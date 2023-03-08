@@ -5,13 +5,18 @@ import android.util.Log;
 import androidx.annotation.AnyThread;
 import androidx.annotation.WorkerThread;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
 
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class ServerAPI {
     private volatile static ServerAPI instance = null;
@@ -58,6 +63,25 @@ public class ServerAPI {
         }
     }
 
+    @WorkerThread
+    public void putNote(Friend friend) {
+        final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+        Gson gson = new Gson();
+        String url = "https://socialcompass.goto.ucsd.edu/location/";
+        String publicCode = friend.getPublic_code();
+        var body = RequestBody.create("", JSON);
+        var request = new Request.Builder()
+                .url(url + publicCode)
+                .method("PUT", body)
+                .build();
+
+        try (var response = client.newCall(request).execute()) {
+            assert response.body() != null;
+            var b = response.body().string();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
     @AnyThread
     public Future<String> echoAsync(String msg) {
