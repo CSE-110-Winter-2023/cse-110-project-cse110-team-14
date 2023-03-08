@@ -1,15 +1,38 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.example.myapplication.model.MeterToMile;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "friends")
 public class Friend {
+
+    @PrimaryKey
+    @SerializedName("public_code")
+    @NonNull
     private String public_code;
+
+    @SerializedName("label")
+    @NonNull
     private String label;
+
+    @SerializedName("latitude")
     private double latitude;
+
+    @SerializedName("longitude")
     private double longitude;
+
+    @SerializedName(value = "version")
     private int version;
+
+    @SerializedName("distance")
     private double distance;
+
+    @SerializedName("relative_angle")
     private double relativeAngle;
 
     public Friend(String public_code, String label, double latitude, double longitude, int version){
