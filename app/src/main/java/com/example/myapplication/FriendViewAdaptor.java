@@ -7,11 +7,13 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FriendViewAdaptor {
+public class FriendViewAdaptor implements Serializable {
     private Context context;
     private ConstraintLayout constraintLayout;
+    private ArrayList<Friend> friends = new ArrayList<>();
     private ArrayList<TextView> labelView = new ArrayList<>();
     private ArrayList<ImageView> iconView = new ArrayList<>();
 
@@ -20,6 +22,8 @@ public class FriendViewAdaptor {
         this.constraintLayout = constraintLayout;
     }
     public void addNewView(Friend friend) {
+
+        friends.add(friend);
 
         ConstraintLayout.LayoutParams newLayoutParams1 = new ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.WRAP_CONTENT,
@@ -53,6 +57,7 @@ public class FriendViewAdaptor {
     public void changeAngle(int i, double angle) {
         TextView thisLabel = labelView.get(i);
         ImageView thisIcon = iconView.get(i);
+        thisLabel.setText(friends.get(i).getLabel());
         ConstraintLayout.LayoutParams labelLayoutParams = (ConstraintLayout.LayoutParams) thisLabel.getLayoutParams();
         labelLayoutParams.circleAngle = (float)angle;
         //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
@@ -66,6 +71,7 @@ public class FriendViewAdaptor {
     public void changeDistance(int i, double distance, int zoomLevel) {
         TextView thisLabel = labelView.get(i);
         ImageView thisIcon = iconView.get(i);
+        thisLabel.setText(friends.get(i).getLabel());
         boolean visible = CheckVisibility.checkDistance(zoomLevel, distance);
         if (!visible) {
             thisLabel.setVisibility(View.INVISIBLE);

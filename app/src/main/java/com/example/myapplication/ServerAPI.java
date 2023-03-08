@@ -29,14 +29,7 @@ public class ServerAPI {
         return instance;
     }
 
-    /**
-     * An example of sending a GET request to the server.
-     *
-     * The /echo/{msg} endpoint always just returns {"message": msg}.
-     *
-     * This method should can be called on a background thread (Android
-     * disallows network requests on the main thread).
-     */
+
     @WorkerThread
     public void updateLocation(Friend friend) {
         // URLs cannot contain spaces, so we replace them with %20.
@@ -51,6 +44,7 @@ public class ServerAPI {
             assert response.body() != null;
             var body = response.body().string();
             JSONObject jsonObject = new JSONObject(body);
+            friend.setLabel(jsonObject.getString("label"));
             friend.setLatitude(jsonObject.getDouble("latitude"));
             friend.setLongitude(jsonObject.getDouble("longitude"));
         } catch (Exception e) {
