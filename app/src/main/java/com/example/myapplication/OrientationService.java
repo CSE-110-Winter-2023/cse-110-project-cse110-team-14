@@ -12,7 +12,6 @@ import androidx.lifecycle.MutableLiveData;
 public class OrientationService implements SensorEventListener {
 
     private static OrientationService instance;
-
     private final SensorManager sensorManager;
     private float[] accelerometerReading;
     private float[] magnetometerReading;
@@ -88,5 +87,4 @@ public class OrientationService implements SensorEventListener {
     public LiveData<Float> getOrientation() {
         return this.azimuth;
     }
-
 }

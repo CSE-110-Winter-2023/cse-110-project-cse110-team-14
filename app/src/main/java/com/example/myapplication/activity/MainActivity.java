@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.myapplication.CheckVisibility;
 import com.example.myapplication.DistanceToDp;
 import com.example.myapplication.DpSpPxConversion;
+import com.example.myapplication.FirstOpened;
 import com.example.myapplication.Friend;
 import com.example.myapplication.FriendViewAdaptor;
 import com.example.myapplication.LocationService;
@@ -45,11 +46,12 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
+    final String START = "Start";
     private Button zoomIn;
     private Button zoomOut;
     private ZoomObserver zoom;
     private UIRotator ui;
-
+    private FirstOpened open;
     private ArrayList<Friend> friends = new ArrayList<>();
     private OrientationService orientationService;
     private LocationService locationService;
@@ -58,38 +60,29 @@ public class MainActivity extends AppCompatActivity {
     private ScheduledExecutorService executor;
     private ServerAPI client;
     private FriendViewAdaptor viewAdaptor;
-
+    private Button addFriend;
 
     private float bearingAngle;
     private float azimuth = 0f;
-
-    private Button addFriend;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.setUp();
         this.setRingUI();
-        ui = new UIRotator(this);
-        
-        addFriend = findViewById(R.id.addFriendBtn);
-        addFriend.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
-            startActivity(intent);
-        });
 
-        orientationService = OrientationService.singleton(this);
-        this.reobserveOrientation();
-
-        locationService = LocationService.singleton(this);
-        this.reobserveLocation();
-
-        viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
+        this.setUpAddFriendButton();
 
         //for testing
+        this.testFriends();
+
+        // Schedule the RequestThread task to run every 3 seconds
+        this.scheduleRate(0,3);
+    }
+
+    private void testFriends(){
         Friend f1 = new Friend("42424242", "abc", 30, -117, 1);
         Friend f2 = new Friend("38383838", "bcd", 25, -117, 1);
         friends.add(f1);
@@ -97,15 +90,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < friends.size(); ++i) {
             viewAdaptor.addNewView(friends.get(i));
         }
-
-
-        client = ServerAPI.provide();
-
-        executor = Executors.newScheduledThreadPool(1);
-
-
-        // Schedule the RequestThread task to run every 3 seconds
-        executor.scheduleAtFixedRate(new RequestThread(), 0, 3, TimeUnit.SECONDS);
     }
 
     private class RequestThread implements Runnable {
@@ -115,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
                 client.updateLocation(friends.get(i));
             }
         }
+    }
+
+    private void scheduleRate(int initial, int period){
+        executor.scheduleAtFixedRate(new RequestThread(), initial, period, TimeUnit.SECONDS);
     }
 
     @Override
@@ -135,6 +123,22 @@ public class MainActivity extends AppCompatActivity {
         executor.shutdown();
     }
 
+    private void setUp(){
+        ui = new UIRotator(this);
+        open = new FirstOpened(this, this);
+        //TextView uid = findViewById(R.id.uid);
+        //uid.setText("UID: " + open.getUID());
+
+        orientationService = OrientationService.singleton(this);
+        locationService = LocationService.singleton(this);
+        this.reobserveOrientation();
+        this.reobserveLocation();
+
+        viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
+        client = ServerAPI.provide();
+        executor = Executors.newScheduledThreadPool(1);
+    }
+
     private void setRingUI(){
         TextView circle1 = findViewById(R.id.circle1);
         TextView circle2 = findViewById(R.id.circle2);
@@ -143,6 +147,14 @@ public class MainActivity extends AppCompatActivity {
         zoom = new ZoomObserver(circle1, circle2, circle3, circle4);
         zoomIn = findViewById(R.id.zoomIn);
         zoomOut = findViewById(R.id.zoomOut);
+    }
+
+    private void setUpAddFriendButton(){
+        addFriend = findViewById(R.id.addFriendBtn);
+        addFriend.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
+            startActivity(intent);
+        });
     }
 
     public void onZoomInClicked(View v) {
