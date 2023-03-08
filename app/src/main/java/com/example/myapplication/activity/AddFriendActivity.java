@@ -27,8 +27,12 @@ public class AddFriendActivity extends AppCompatActivity {
         mAddButton = findViewById(R.id.add_button);
         mCancelButton = findViewById(R.id.cancel_button);
 
-        Intent intent = getIntent();
+        this.setUpAddButton();
+        this.setUpCancelButton();
+    }
 
+
+    private void setUpAddButton(){
         mAddButton.setOnClickListener(v -> {
             String name = mEditUID.getText().toString();
             if (!name.isEmpty()) {
@@ -44,7 +48,9 @@ public class AddFriendActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Please enter a UID", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void setUpCancelButton(){
         mCancelButton.setOnClickListener(v -> finish());
     }
 }
