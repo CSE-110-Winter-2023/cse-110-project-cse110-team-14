@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.AddFriendDialog;
 import com.example.myapplication.CheckVisibility;
 import com.example.myapplication.DistanceToDp;
 import com.example.myapplication.DpSpPxConversion;
@@ -37,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -60,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
     private ScheduledExecutorService executor;
     private ServerAPI client;
     private FriendViewAdaptor viewAdaptor;
+    private Context context = this;
     private Button addFriend;
+
 
     private float bearingAngle;
     private float azimuth = 0f;
@@ -75,21 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
         this.setUpAddFriendButton();
 
-        //for testing
-        this.testFriends();
-
-        // Schedule the RequestThread task to run every 3 seconds
-        this.scheduleRate(0,3);
-    }
-
-    private void testFriends(){
-        Friend f1 = new Friend("42424242", "abc", 30, -117, 1);
-        Friend f2 = new Friend("38383838", "bcd", 25, -117, 1);
-        friends.add(f1);
-        friends.add(f2);
-        for (int i = 0; i < friends.size(); ++i) {
-            viewAdaptor.addNewView(friends.get(i));
-        }
+        // Schedule the RequestThread task to run every 1 seconds
+        this.scheduleRate(0,1);
     }
 
     private class RequestThread implements Runnable {
@@ -151,9 +144,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpAddFriendButton(){
         addFriend = findViewById(R.id.addFriendBtn);
-        addFriend.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
-            startActivity(intent);
+        addFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddFriendDialog dialog = new AddFriendDialog(context);
+                dialog.addNewFriendDialog(friends, viewAdaptor);
+            }
         });
     }
 

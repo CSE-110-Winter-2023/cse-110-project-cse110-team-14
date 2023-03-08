@@ -1,5 +1,6 @@
 package com.example.myapplication.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -7,7 +8,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.Friend;
+import com.example.myapplication.FriendViewAdaptor;
 import com.example.myapplication.R;
+
+import java.util.ArrayList;
 
 public class AddFriendActivity extends AppCompatActivity {
     private EditText mEditUID;
@@ -25,6 +30,7 @@ public class AddFriendActivity extends AppCompatActivity {
         this.setUpAddButton();
         this.setUpCancelButton();
     }
+
 
     private void setUpAddButton(){
         mAddButton.setOnClickListener(v -> {
