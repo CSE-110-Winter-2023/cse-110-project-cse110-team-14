@@ -25,57 +25,34 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="16dp">
+
 
         <TextView
             android:id="@+id/uidView"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="UID: iuholiuh89237g89"
+            android:layout_height="45dp"
             android:gravity="center"
-            app:layout_constraintBottom_toStartOf="@+id/circle1"
+            android:text="UID: iuholiuh89237g89"
+            app:layout_constraintBottom_toTopOf="@+id/circle1"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            />
-=======
-=======
->>>>>>> Stashed changes
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-
+            app:layout_constraintVertical_bias="0.132" />
 
         <TextView
             android:id="@+id/circle1"
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            android:layout_width="match_parent"
-=======
-            android:layout_width="0dp"
->>>>>>> Stashed changes
-=======
-            android:layout_width="0dp"
->>>>>>> Stashed changes
-            android:layout_height="0dp"
+            android:layout_width="370dp"
+            android:layout_height="400dp"
             android:background="@drawable/ring"
             android:contentDescription="BIGGEST ONE"
             android:textAlignment="center"
-            android:layout_marginBottom="100dp"
-            android:layout_marginTop="200dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/uidView"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
         <TextView
@@ -108,10 +85,13 @@
             android:background="@drawable/ring"
             android:text=""
             android:textAlignment="center"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="@id/circle3"
             app:layout_constraintEnd_toEndOf="@id/circle3"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/circle3"
-            app:layout_constraintTop_toTopOf="@id/circle3" />
+            app:layout_constraintTop_toTopOf="@id/circle3"
+            app:layout_constraintVertical_bias="1.0" />
 
         <Button
             android:id="@+id/zoomIn"

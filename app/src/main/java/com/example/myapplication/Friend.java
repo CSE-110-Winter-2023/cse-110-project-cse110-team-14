@@ -14,26 +14,26 @@ public class Friend {
     @PrimaryKey
     @SerializedName("public_code")
     @NonNull
-    private String public_code;
+    public String public_code;
 
     @SerializedName("label")
     @NonNull
-    private String label;
+    public String label;
 
     @SerializedName("latitude")
-    private double latitude;
+    public double latitude;
 
     @SerializedName("longitude")
-    private double longitude;
+    public double longitude;
 
     @SerializedName(value = "version")
-    private int version;
+    public int version;
 
     @SerializedName("distance")
-    private double distance;
+    public double distance;
 
     @SerializedName("relative_angle")
-    private double relativeAngle;
+    public double relativeAngle;
 
     public Friend(String public_code, String label, double latitude, double longitude, int version){
         this.public_code = public_code;
