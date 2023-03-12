@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private FriendViewAdaptor viewAdaptor;
     private Context context = this;
     private Button addFriend;
+    private FriendDao dao;
+    private FriendDatabase db;
 
 
     private float bearingAngle;
@@ -79,6 +81,37 @@ public class MainActivity extends AppCompatActivity {
 
         this.setUp();
         this.setRingUI();
+        ui = new UIRotator(this);
+        
+        addFriend = findViewById(R.id.addFriendBtn);
+        addFriend.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
+            startActivity(intent);
+        });
+
+        orientationService = OrientationService.singleton(this);
+        this.reobserveOrientation();
+
+        locationService = LocationService.singleton(this);
+        this.reobserveLocation();
+
+        viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
+
+        //for testing
+        Friend f1 = new Friend("42424242", "abc", 30, -117, 1);
+        Friend f2 = new Friend("38383838", "bcd", 25, -117, 1);
+        friends.add(f1);
+        friends.add(f2);
+        for (int i = 0; i < friends.size(); ++i) {
+            viewAdaptor.addNewView(friends.get(i));
+        }
+        db = FriendDatabase.provide(this);
+        dao = db.getDao();
+
+
+        client = ServerAPI.provide();
+
+        executor = Executors.newScheduledThreadPool(1);
 
         this.setUpAddFriendButton();
 

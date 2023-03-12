@@ -7,11 +7,40 @@
     tools:context=".activity.MainActivity">
 
 
+    <!--<TextView
+        android:id="@+id/uid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="100dp"
+        android:text="uid: uh439g49309d903h9"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
 
+
+        <TextView
+            android:id="@+id/uidView"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:text="UID: iuholiuh89237g89"
+            app:layout_constraintBottom_toTopOf="@+id/circle1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.132" />
 
         <TextView
             android:id="@+id/circle1"
@@ -23,7 +52,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <TextView
             android:id="@+id/circle2"
@@ -55,10 +85,13 @@
             android:background="@drawable/ring"
             android:text=""
             android:textAlignment="center"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="@id/circle3"
             app:layout_constraintEnd_toEndOf="@id/circle3"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/circle3"
-            app:layout_constraintTop_toTopOf="@id/circle3" />
+            app:layout_constraintTop_toTopOf="@id/circle3"
+            app:layout_constraintVertical_bias="1.0" />
 
         <Button
             android:id="@+id/zoomIn"
