@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
@@ -61,8 +62,12 @@ public class FirstOpened {
             Dialog();
             checkStart.edit().putBoolean("first", false).commit();
         }
+        else{
+            TextView uid = mainAct.findViewById(R.id.uid);
+            uid.setText("UID: " + getUID());
+        }
         //uncomment this to test for new opening
-        checkStart.edit().putBoolean("first", true).commit();
+        //checkStart.edit().putBoolean("first", true).commit();
     }
 
     private void Dialog(){
@@ -90,6 +95,9 @@ public class FirstOpened {
 
                     dialog.dismiss();
                     Toast.makeText(namePopUp.getContext(), "Saved!", Toast.LENGTH_LONG).show();
+
+                    TextView uid = mainAct.findViewById(R.id.uid);
+                    uid.setText("UID: " + getUID());
                 } else {
                     Toast.makeText(namePopUp.getContext(), "Please input a correct name", Toast.LENGTH_LONG).show();
                     dialog.show();

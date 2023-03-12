@@ -26,7 +26,6 @@ public class LocationItem {
     @NonNull
     public String label;
 
-
     public LocationItem(double longitude, double latitude, @NonNull String label){
         this.longitude = longitude;
         this.latitude = latitude;

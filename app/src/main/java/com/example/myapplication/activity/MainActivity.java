@@ -120,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
     private void setUp(){
         ui = new UIRotator(this);
         open = new FirstOpened(this, this);
-        //TextView uid = findViewById(R.id.uid);
-        //uid.setText("UID: " + open.getUID());
 
         orientationService = OrientationService.singleton(this);
         locationService = LocationService.singleton(this);
