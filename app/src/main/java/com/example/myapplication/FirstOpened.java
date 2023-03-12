@@ -67,7 +67,7 @@ public class FirstOpened {
             uid.setText("UID: " + getUID());
         }
         //uncomment this to test for new opening
-        checkStart.edit().putBoolean("first", true).commit();
+        //checkStart.edit().putBoolean("first", true).commit();
     }
 
     private void Dialog(){
