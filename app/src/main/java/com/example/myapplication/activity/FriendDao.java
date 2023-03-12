@@ -20,10 +20,10 @@ public abstract class FriendDao {
     public abstract boolean exists(String publicCode);
 
     @Query("SELECT * FROM friends WHERE public_code = :publicCode")
-    public abstract LiveData<Friend> get(String publicCode);
+    public abstract Friend get(String publicCode);
 
     @Query("SELECT * FROM friends ORDER BY label")
-    public abstract LiveData<List<Friend>> getAll();
+    public abstract List<Friend> getAll();
 
     @Delete
     public abstract int delete(Friend friend);

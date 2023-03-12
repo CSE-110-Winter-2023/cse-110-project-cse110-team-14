@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private ScheduledExecutorService executor;
     private ServerAPI client;
     private FriendViewAdaptor viewAdaptor;
+    private FriendDao dao;
+    private FriendDatabase db;
 
 
     private float bearingAngle;
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < friends.size(); ++i) {
             viewAdaptor.addNewView(friends.get(i));
         }
+        db = FriendDatabase.provide(this);
+        dao = db.getDao();
 
 
         client = ServerAPI.provide();

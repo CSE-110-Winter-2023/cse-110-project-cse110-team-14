@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.WorkerThread;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
 
@@ -17,6 +18,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ServerAPI {
     private volatile static ServerAPI instance = null;
@@ -60,6 +62,28 @@ public class ServerAPI {
             friend.setLongitude(jsonObject.getDouble("longitude"));
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @WorkerThread
+    public Friend get(String uid) throws Exception {
+        String url = "https://socialcompass.goto.ucsd.edu/location/" + uid.replace(" ", "%20");
+        var request = new Request.Builder()
+                .url(url)
+                .method("GET", null)
+                .build();
+        try(Response response = client.newCall(request).execute()) {
+            var body = response.body().string();
+
+            if(!response.isSuccessful()) {
+                System.out.println("Response not successful: " + body);
+                return null;
+            }
+            System.out.println("Returning friend: " + body);
+            return Friend.fromJSON(body);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey;
 
 import com.example.myapplication.model.MeterToMile;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "friends")
@@ -107,5 +108,9 @@ public class Friend {
         bearing = (bearing + 360) % 360;
         relativeAngle = bearing - azimuth;
         return relativeAngle;
+    }
+
+    public static Friend fromJSON(String json) {
+        return new Gson().fromJson(json, Friend.class);
     }
 }
