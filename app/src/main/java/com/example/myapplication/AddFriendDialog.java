@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.myapplication.activity.FriendDao;
+import com.example.myapplication.activity.FriendDatabase;
 import com.example.myapplication.activity.MainActivity;
 import com.example.myapplication.model.LocationItem;
 import com.google.android.gms.maps.model.LatLng;
@@ -31,7 +33,7 @@ public class AddFriendDialog {
         this.context = context;
     }
 
-    public void addNewFriendDialog(ArrayList<Friend> friends, FriendViewAdaptor viewAdaptor) {
+    public void addNewFriendDialog(ArrayList<Friend> friends, FriendViewAdaptor viewAdaptor, FriendDatabase db, FriendDao dao) {
         dialogBuilder = new AlertDialog.Builder(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         locationPopupView = inflater.inflate(R.layout.activity_add_friend, null);
@@ -50,6 +52,7 @@ public class AddFriendDialog {
                     Toast.makeText(context, "UID added", Toast.LENGTH_SHORT).show();
 
                     Friend newFriend = new Friend(name, "null", 0, 0, 1);
+                    dao.upsert(newFriend);
                     friends.add(newFriend);
                     viewAdaptor.addNewView(newFriend);
                     dialog.dismiss();

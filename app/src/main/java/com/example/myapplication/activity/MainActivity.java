@@ -97,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
 
         viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
 
+        db = FriendDatabase.provide(this);
+        dao = db.getDao();
+        var items = dao.getAll();
+        for(Friend l: items){
+            friends.add(l);
+        }
         //for testing
         Friend f1 = new Friend("42424242", "abc", 30, -117, 1);
         Friend f2 = new Friend("38383838", "bcd", 25, -117, 1);
@@ -105,8 +111,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < friends.size(); ++i) {
             viewAdaptor.addNewView(friends.get(i));
         }
-        db = FriendDatabase.provide(this);
-        dao = db.getDao();
 
 
         client = ServerAPI.provide();
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AddFriendDialog dialog = new AddFriendDialog(context);
-                dialog.addNewFriendDialog(friends, viewAdaptor);
+                dialog.addNewFriendDialog(friends, viewAdaptor, db, dao);
             }
         });
     }
@@ -240,5 +244,6 @@ public class MainActivity extends AppCompatActivity {
     public int getZoomLevel() {
         return zoom.getZoomLevel();
     }
+
 
 }
