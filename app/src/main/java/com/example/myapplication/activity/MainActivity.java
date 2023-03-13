@@ -104,10 +104,6 @@ public class MainActivity extends AppCompatActivity {
             friends.add(l);
         }
         //for testing
-        Friend f1 = new Friend("42424242", "abc", 30, -117, 1);
-        Friend f2 = new Friend("38383838", "bcd", 25, -117, 1);
-        friends.add(f1);
-        friends.add(f2);
         for (int i = 0; i < friends.size(); ++i) {
             viewAdaptor.addNewView(friends.get(i));
         }

@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,15 +11,12 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.myapplication.activity.FriendDao;
 import com.example.myapplication.activity.FriendDatabase;
-import com.example.myapplication.activity.MainActivity;
-import com.example.myapplication.model.LocationItem;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class AddFriendDialog {
     private Context context;
@@ -48,35 +44,50 @@ public class AddFriendDialog {
         dialog = dialogBuilder.create();
         dialog.show();
 
+
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = mEditUID.getText().toString();
-                if (!name.isEmpty()) {
-                    Toast.makeText(context, "UID added", Toast.LENGTH_SHORT).show();
 
-                    //Friend newFriend = new Friend(name, "null", 0, 0, 1);
-                    executor.submit(() -> {
+                // Check if friend is already in the database
+                Friend f1 = dao.get(name);
+                if (f1 != null) {
+                    Toast.makeText(context, "Friend already exists", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Input validation from the server
+                Future<Boolean> future = executor.submit(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
                         try {
-                            Friend newFriend = api.get(name);
-                            dao.upsert(newFriend);
-                            friends.add(newFriend);
-                            /*runOnUiThread(() -> {
-                                counterView.setText(String.valueOf(countCopy));
-
-                                if(this.maxCount == Integer.parseInt(counterView.getText().toString()))
-                                    Utilities.showAlert(this,"Count is finished");
-                            });*/
-                            viewAdaptor.addNewView(newFriend);
-                            dialog.dismiss();
+                            Friend check = api.get(name);
+                            if (check == null) {
+                                return false;
+                            }
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                    });
-                    //dao.upsert(newFriend);
-                    //friends.add(newFriend);
-                    //viewAdaptor.addNewView(newFriend);
-                    //dialog.dismiss();
+                        return true;
+                    }
+                });
+                if (!name.isEmpty()) {
+                    Friend newFriend = new Friend(name, "null", 0, 0, 1);
+                    try {
+                        boolean result = future.get();
+                        if (result == true) {
+                            dao.upsert(newFriend);
+                            friends.add(newFriend);
+                            viewAdaptor.addNewView(newFriend);
+                            Toast.makeText(context, "UID added", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(context, "Invalid UID", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    dialog.dismiss();
                 } else {
                     Toast.makeText(context, "Please enter a UID", Toast.LENGTH_SHORT).show();
                 }

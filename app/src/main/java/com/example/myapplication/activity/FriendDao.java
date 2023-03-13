@@ -1,5 +1,7 @@
 package com.example.myapplication.activity;
 
+import android.media.tv.TableRequest;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -27,4 +29,7 @@ public abstract class FriendDao {
 
     @Delete
     public abstract int delete(Friend friend);
+
+    @Query("DELETE FROM friends")
+    public abstract int deleteAll();
 }
