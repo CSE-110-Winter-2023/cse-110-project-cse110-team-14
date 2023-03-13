@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             for(int i = 0; i < friends.size(); i++) {
                 client.updateLocation(friends.get(i));
             }
+            client.uploadLocation(myLocation);
         }
     }
 
@@ -127,7 +128,8 @@ public class MainActivity extends AppCompatActivity {
         this.reobserveLocation();
 
         viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
-        client = ServerAPI.provide();
+        client = ServerAPI.provide(open.getName(), open.getUID());
+        Toast.makeText(this, open.getUID(), Toast.LENGTH_LONG).show();
         executor = Executors.newScheduledThreadPool(1);
     }
 

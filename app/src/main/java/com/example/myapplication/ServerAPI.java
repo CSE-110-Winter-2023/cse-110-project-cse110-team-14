@@ -5,26 +5,43 @@ import android.util.Log;
 import androidx.annotation.AnyThread;
 import androidx.annotation.WorkerThread;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONObject;
 
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 
 public class ServerAPI {
     private volatile static ServerAPI instance = null;
 
     private OkHttpClient client;
+    private String myName;
+    private String myUID;
+    private String privateCode;
+    private boolean firstTime;
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    public ServerAPI() {
+
+    public ServerAPI(String name, String UID) {
+        myName = name;
+        myUID = UID;
+        privateCode = UUID.randomUUID().toString();
+        firstTime = true;
         this.client = new OkHttpClient();
     }
 
-    public static ServerAPI provide() {
+    public static ServerAPI provide(String name, String UID) {
         if (instance == null) {
-            instance = new ServerAPI();
+            instance = new ServerAPI(name, UID);
         }
         return instance;
     }
@@ -41,16 +58,82 @@ public class ServerAPI {
                 .build();
 
         try (var response = client.newCall(request).execute()) {
+
             assert response.body() != null;
             var body = response.body().string();
             JSONObject jsonObject = new JSONObject(body);
             friend.setLabel(jsonObject.getString("label"));
             friend.setLatitude(jsonObject.getDouble("latitude"));
             friend.setLongitude(jsonObject.getDouble("longitude"));
+
         } catch (Exception e) {
+
             e.printStackTrace();
+
         }
     }
+
+    public void uploadLocation(LatLng myLocation) {
+
+        if(firstTime) {
+
+            String postBody = "{\n"
+                    + "\"private_code\": \"" + privateCode + "\",\n"
+                    + "\"label\": \"" + myName + "\",\n"
+                    + "\"latitude\": " + myLocation.latitude + ",\n"
+                    + "\"longitude\": " + myLocation.longitude + "\n"
+                    + "}";
+
+            var requestBody = RequestBody.create(postBody, JSON);
+
+            var request = new Request.Builder()
+                    .url("https://socialcompass.goto.ucsd.edu/location/" + myUID)
+                    .method("PUT", requestBody)
+                    .build();
+
+            try (var response = client.newCall(request).execute()) {
+
+                String responseBody = response.body().string();
+                Log.d("MainActivity", responseBody);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+            }
+
+            firstTime = false;
+
+        } else {
+
+            String postBody = "{\n"
+                    + "\"private_code\": \"" + privateCode + "\",\n"
+                    + "\"latitude\": " + myLocation.latitude + ",\n"
+                    + "\"longitude\": " + myLocation.longitude + "\n"
+                    + "}";
+
+            var requestBody = RequestBody.create(postBody, JSON);
+
+            var request = new Request.Builder()
+                    .url("https://socialcompass.goto.ucsd.edu/location/" + myUID)
+                    .method("PATCH", requestBody)
+                    .build();
+
+            try (var response = client.newCall(request).execute()) {
+
+                String responseBody = response.body().string();
+                Log.d("MainActivity", responseBody);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+            }
+        }
+
+
+    }
+
 
     /**
     @AnyThread
