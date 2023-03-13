@@ -92,8 +92,6 @@ public class ServerAPI {
         try (var response = client.newCall(request).execute()) {
 
             String responseBody = response.body().string();
-            Log.d("MainActivity", responseBody);
-            Log.d("MainActivity", myUID);
 
         } catch (Exception e) {
 

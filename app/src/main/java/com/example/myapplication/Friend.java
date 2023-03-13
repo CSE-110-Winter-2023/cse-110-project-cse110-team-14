@@ -63,6 +63,10 @@ public class Friend {
         return this.distance;
     }
 
+    public double getRelativeAngle() {
+        return this.relativeAngle;
+    }
+
     public double calculateDistance(LatLng location) {
         double R = 6378137; // Earth’s mean radius in meter
         double dLat = Math.toRadians(latitude - location.latitude);
