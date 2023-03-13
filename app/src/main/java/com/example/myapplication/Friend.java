@@ -59,6 +59,9 @@ public class Friend {
     public int getVersion() {
         return this.version;
     }
+    public double getDistance() {
+        return this.distance;
+    }
 
     public double calculateDistance(LatLng location) {
         double R = 6378137; // Earth’s mean radius in meter

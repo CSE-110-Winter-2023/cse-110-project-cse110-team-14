@@ -137,16 +137,43 @@ public class FriendViewAdaptor implements Serializable {
 
                         if (tf) {
                             //offset
-                            Log.d("overlap", "overlapped");
+                            //Log.d("overlap", "overlapped");
+                            solveOverlap(viewNumber, i);
                         } else {
-                            Log.d("NO overlap", "not overlapped");
+                            //Log.d("NO overlap", "not overlapped");
                         }
                     }
                 }
             }
         }
     }
+
+    private void solveOverlap(int view1, int view2){
+        double d1 = friends.get(view1).getDistance();
+        double d2 = friends.get(view2).getDistance();
+
+        if(checkLevel(d1) == checkLevel(d2)) {
+            truncate();
+        } else {
+            offSet();
+        }
+    }
+
+    private int checkLevel(double distance){
+        if(distance <= 1){
+            return 1;
+        } else if(distance <= 10){
+            return 2;
+        } else if(distance <= 500){
+            return 3;
+        } else {
+            return 4;
+        }
+    }
     private void offSet(){
+
+    }
+    private void truncate(){
 
     }
 }
