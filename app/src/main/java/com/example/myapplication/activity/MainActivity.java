@@ -89,10 +89,13 @@ public class MainActivity extends AppCompatActivity {
     private class RequestThread implements Runnable {
         @Override
         public void run() {
-            for(int i = 0; i < friends.size(); i++) {
-                client.updateLocation(friends.get(i));
+            if(open.isUidGenerated()) {
+                client = ServerAPI.provide(open.getName(), open.getUID(), open.getPrivateKey());
+                for(int i = 0; i < friends.size(); i++) {
+                    client.updateLocation(friends.get(i));
+                }
+                client.uploadLocation(myLocation);
             }
-            client.uploadLocation(myLocation);
         }
     }
 
@@ -128,8 +131,7 @@ public class MainActivity extends AppCompatActivity {
         this.reobserveLocation();
 
         viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
-        client = ServerAPI.provide(open.getName(), open.getUID());
-        Toast.makeText(this, open.getUID(), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, open.getUID(), Toast.LENGTH_LONG).show();
         executor = Executors.newScheduledThreadPool(1);
     }
 

@@ -31,17 +31,17 @@ public class ServerAPI {
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
 
-    public ServerAPI(String name, String UID) {
+    public ServerAPI(String name, String UID, String privateCode) {
         myName = name;
         myUID = UID;
-        privateCode = UUID.randomUUID().toString();
+        this.privateCode = privateCode;
         firstTime = true;
         this.client = new OkHttpClient();
     }
 
-    public static ServerAPI provide(String name, String UID) {
+    public static ServerAPI provide(String name, String UID, String privateCode) {
         if (instance == null) {
-            instance = new ServerAPI(name, UID);
+            instance = new ServerAPI(name, UID, privateCode);
         }
         return instance;
     }
@@ -75,62 +75,33 @@ public class ServerAPI {
 
     public void uploadLocation(LatLng myLocation) {
 
-        if(firstTime) {
+        String postBody = "{\n"
+                + "\"private_code\": \"" + privateCode + "\",\n"
+                + "\"label\": \"" + myName + "\",\n"
+                + "\"latitude\": " + myLocation.latitude + ",\n"
+                + "\"longitude\": " + myLocation.longitude + "\n"
+                + "}";
 
-            String postBody = "{\n"
-                    + "\"private_code\": \"" + privateCode + "\",\n"
-                    + "\"label\": \"" + myName + "\",\n"
-                    + "\"latitude\": " + myLocation.latitude + ",\n"
-                    + "\"longitude\": " + myLocation.longitude + "\n"
-                    + "}";
+        var requestBody = RequestBody.create(postBody, JSON);
 
-            var requestBody = RequestBody.create(postBody, JSON);
+        var request = new Request.Builder()
+                .url("https://socialcompass.goto.ucsd.edu/location/" + myUID)
+                .method("PUT", requestBody)
+                .build();
 
-            var request = new Request.Builder()
-                    .url("https://socialcompass.goto.ucsd.edu/location/" + myUID)
-                    .method("PUT", requestBody)
-                    .build();
+        try (var response = client.newCall(request).execute()) {
 
-            try (var response = client.newCall(request).execute()) {
+            String responseBody = response.body().string();
+            Log.d("MainActivity", responseBody);
+            Log.d("MainActivity", myUID);
 
-                String responseBody = response.body().string();
-                Log.d("MainActivity", responseBody);
+        } catch (Exception e) {
 
-            } catch (Exception e) {
+            e.printStackTrace();
 
-                e.printStackTrace();
-
-            }
-
-            firstTime = false;
-
-        } else {
-
-            String postBody = "{\n"
-                    + "\"private_code\": \"" + privateCode + "\",\n"
-                    + "\"latitude\": " + myLocation.latitude + ",\n"
-                    + "\"longitude\": " + myLocation.longitude + "\n"
-                    + "}";
-
-            var requestBody = RequestBody.create(postBody, JSON);
-
-            var request = new Request.Builder()
-                    .url("https://socialcompass.goto.ucsd.edu/location/" + myUID)
-                    .method("PATCH", requestBody)
-                    .build();
-
-            try (var response = client.newCall(request).execute()) {
-
-                String responseBody = response.body().string();
-                Log.d("MainActivity", responseBody);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-            }
         }
 
+        firstTime = false;
 
     }
 
