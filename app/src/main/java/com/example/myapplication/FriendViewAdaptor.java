@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +24,6 @@ public class FriendViewAdaptor implements Serializable {
         this.constraintLayout = constraintLayout;
     }
     public void addNewView(Friend friend) {
-
         friends.add(friend);
 
         ConstraintLayout.LayoutParams newLayoutParams1 = new ConstraintLayout.LayoutParams(
@@ -84,9 +85,10 @@ public class FriendViewAdaptor implements Serializable {
             DistanceToDp temp = new DistanceToDp(distance, zoomLevel);
             int dp = temp.calculateDp();
             ConstraintLayout.LayoutParams labelLayoutParams = (ConstraintLayout.LayoutParams) thisLabel.getLayoutParams();
-            labelLayoutParams.circleRadius = DpSpPxConversion.calculatePixels(dp, context);;
+            labelLayoutParams.circleRadius = DpSpPxConversion.calculatePixels(dp, context);
             //Toast.makeText(this, ""+lastLat+"   "+markerLat+"   "+bearingAngle, Toast.LENGTH_LONG).show();
             thisLabel.setLayoutParams(labelLayoutParams);
+            checkOverlap(i);
         }
     }
 
@@ -103,5 +105,48 @@ public class FriendViewAdaptor implements Serializable {
         labelView.remove(i);
         iconView.remove(i);
     }
+    private void checkOverlap(int viewNumber){
+        var view1 = labelView.get(viewNumber);
+        if(view1.getVisibility() == View.VISIBLE){
+            for(int i = viewNumber + 1; i < labelView.size(); i++) {
+                var view2 = labelView.get(i);
+                if(view2.getVisibility() == View.VISIBLE) {
+                    if (viewNumber != i) {
+                        int[] firstPosition = new int[2];
+                        int[] secondPosition = new int[2];
 
+                        view1.getLocationOnScreen(firstPosition);
+                        view2.getLocationOnScreen(secondPosition);
+
+                        Rect rectFirstView = new Rect(firstPosition[0], firstPosition[1],
+                                firstPosition[0] + view1.getMeasuredWidth(), firstPosition[1] + view1.getMeasuredHeight());
+                        Rect rectSecondView = new Rect(secondPosition[0], secondPosition[1],
+                                secondPosition[0] + view2.getMeasuredWidth(), secondPosition[1] + view2.getMeasuredHeight());
+                        boolean tf = rectFirstView.intersect(rectSecondView);
+
+                        /*
+                        Log.d("View1 width", String.valueOf(view1.getMeasuredWidth()));
+                        Log.d("View1 height",String.valueOf(view1.getMeasuredHeight()));
+                        Log.d("View2 width", String.valueOf(view2.getMeasuredWidth()));
+                        Log.d("View2 height",String.valueOf(view2.getMeasuredHeight()));
+
+                        Log.d("View1 width", String.valueOf(firstPosition[0]));
+                        Log.d("View1 height",String.valueOf(firstPosition[1]));
+                        Log.d("View2 width", String.valueOf(secondPosition[0]));
+                        Log.d("View2 height",String.valueOf(secondPosition[1])); */
+
+                        if (tf) {
+                            //offset
+                            Log.d("overlap", "overlapped");
+                        } else {
+                            Log.d("NO overlap", "not overlapped");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private void offSet(){
+
+    }
 }
