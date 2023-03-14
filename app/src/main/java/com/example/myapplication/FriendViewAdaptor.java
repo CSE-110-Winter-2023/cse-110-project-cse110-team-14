@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static java.lang.Math.abs;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
@@ -8,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,20 +68,20 @@ public class FriendViewAdaptor implements Serializable {
         constraintLayout.addView(newImage);
         iconView.add(newImage);
 
+        overlaps.add(false);
+
         TextView newTempText = new TextView(context);
         newTempText.setText(friend.getLabel());
         newTempText.setLayoutParams(newLayoutParams3);
         constraintLayout.addView(newTempText);
         tempLabelView.add(newTempText);
-
-        overlaps.add(false);
     }
 
     public void changeAngle(int i, double angle) {
         TextView thisLabel = labelView.get(i);
         ImageView thisIcon = iconView.get(i);
         TextView thisTempLabel = tempLabelView.get(i);
-        if(!overlaps.get(i)){
+        if(!overlaps.get(i)) {
             thisLabel.setText(friends.get(i).getLabel());
         }
         ConstraintLayout.LayoutParams labelLayoutParams = (ConstraintLayout.LayoutParams) thisLabel.getLayoutParams();
@@ -108,6 +112,7 @@ public class FriendViewAdaptor implements Serializable {
             thisTempLabel.setVisibility(View.INVISIBLE);
         }
         else {
+            thisLabel.setVisibility(View.VISIBLE);
             thisIcon.setVisibility(View.INVISIBLE);
             if(!overlaps.get(i)) {
                 thisLabel.setVisibility(View.VISIBLE);
@@ -144,7 +149,8 @@ public class FriendViewAdaptor implements Serializable {
         var view1 = labelView.get(viewNumber);
         if(view1.getVisibility() == View.VISIBLE || tempLabelView.get(viewNumber).getVisibility() == View.VISIBLE){
             boolean overallOverlap = false;
-            for(int i = viewNumber + 1; i < labelView.size(); i++) {
+
+            for(int i = 0; i < labelView.size(); i++) {
                 var view2 = labelView.get(i);
                 if(view2.getVisibility() == View.VISIBLE || tempLabelView.get(i).getVisibility() == View.VISIBLE) {
                     if (viewNumber != i) {
@@ -159,17 +165,18 @@ public class FriendViewAdaptor implements Serializable {
                         Rect rectSecondView = new Rect(secondPosition[0], secondPosition[1],
                                 secondPosition[0] + view2.getMeasuredWidth(), secondPosition[1] + view2.getMeasuredHeight());
                         boolean tf = rectFirstView.intersect(rectSecondView);
+                        int widthDiff = abs(firstPosition[0] - secondPosition[0]);
                         if (tf) {
-                            //offset
                             //Log.d("overlap", "overlapped--"+viewNumber);
                             Log.d("overlap", "overlapped--"+i);
                             overlaps.set(viewNumber, true);
                             overlaps.set(i, true);
                             overallOverlap = true;
-                            solveOverlap(viewNumber, i);
+                            solveOverlap(viewNumber, i, widthDiff);
+
                         } else {
                             //Log.d("NO overlap", "not overlapped--"+i);
-                            overlaps.set(i, false);
+                            //overlaps.set(i, false);
                         }
                     }
                 }
@@ -181,14 +188,14 @@ public class FriendViewAdaptor implements Serializable {
         }
     }
 
-    private void solveOverlap(int view1, int view2){
+    private void solveOverlap(int view1, int view2, int diff){
         double d1 = friends.get(view1).getDistance();
         double d2 = friends.get(view2).getDistance();
 
         if(checkLevel(d1) == checkLevel(d2)) {
             offSet(view1, view2);
-        } else {
-            truncate();
+        }  else {
+            truncate(view1, view2, diff);
         }
     }
 
@@ -209,11 +216,6 @@ public class FriendViewAdaptor implements Serializable {
         TextView textView2 = labelView.get(view2);
         TextView tempView1 = tempLabelView.get(view1);
         TextView tempView2 = tempLabelView.get(view2);
-
-        /*
-        tempView1.setText(textView1.getText());
-        tempView2.setText(textView2.getText());
-        */
 
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) textView1.getLayoutParams();
         int distance1 = layoutParams1.circleRadius;
@@ -263,12 +265,46 @@ public class FriendViewAdaptor implements Serializable {
                 ConstraintLayout.LayoutParams tempParams2 = (ConstraintLayout.LayoutParams) tempView2.getLayoutParams();
                 tempParams2.circleRadius = distance2;
                 tempView2.setLayoutParams(tempParams2);
-
             }
-
         }
     }
-    private void truncate(){
+    private void truncate(int view1, int view2, int diff){
 
+        TextView textView1 = labelView.get(view1);
+        TextView textView2 = labelView.get(view2);
+        TextView tempView1 = tempLabelView.get(view1);
+        TextView tempView2 = tempLabelView.get(view2);
+
+        int num = 0;
+        if(diff < 50){
+            num = 4;
+        } else if(diff < 100){
+            num = 3;
+        } else if(diff < 150) {
+            num = 2;
+        } else {
+            num = 1;
+        }
+
+        int size1 = textView1.length();
+        int size2 = textView2.length();
+
+        String text1 = textView1.getText().toString().substring(0, size1 - num);
+        String text2 = textView2.getText().toString().substring(0, size2 - num);
+        Log.d("truncate", "num1: "+view1+", num2: "+view2);
+        tempView1.setText(text1);
+        tempView2.setText(text2);
+
+        ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) textView1.getLayoutParams();
+        int distance1 = layoutParams1.circleRadius;
+        ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) textView2.getLayoutParams();
+        int distance2 = layoutParams2.circleRadius;
+
+        ConstraintLayout.LayoutParams tempParams1 = (ConstraintLayout.LayoutParams) tempView1.getLayoutParams();
+        tempParams1.circleRadius = distance1;
+        tempView1.setLayoutParams(tempParams1);
+        ConstraintLayout.LayoutParams tempParams2 = (ConstraintLayout.LayoutParams) tempView2.getLayoutParams();
+        tempParams2.circleRadius = distance2;
+        tempView2.setLayoutParams(tempParams2);
     }
 }

@@ -55,7 +55,6 @@ public class Friend {
     public double getLongitude() {
         return this.longitude;
     }
-
     public int getVersion() {
         return this.version;
     }
