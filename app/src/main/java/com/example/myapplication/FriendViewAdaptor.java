@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -96,6 +98,7 @@ public class FriendViewAdaptor implements Serializable {
         ConstraintLayout.LayoutParams iconLayoutParams = (ConstraintLayout.LayoutParams) thisIcon.getLayoutParams();
         iconLayoutParams.circleAngle = (float)angle;
         thisIcon.setLayoutParams(iconLayoutParams);
+
     }
 
     public void changeDistance(int i, double distance, int zoomLevel) {
@@ -166,6 +169,7 @@ public class FriendViewAdaptor implements Serializable {
                                 secondPosition[0] + view2.getMeasuredWidth(), secondPosition[1] + view2.getMeasuredHeight());
                         boolean tf = rectFirstView.intersect(rectSecondView);
                         int widthDiff = abs(firstPosition[0] - secondPosition[0]);
+
                         if (tf) {
                             //Log.d("overlap", "overlapped--"+viewNumber);
                             Log.d("overlap", "overlapped--"+i);
@@ -217,19 +221,49 @@ public class FriendViewAdaptor implements Serializable {
         TextView tempView1 = tempLabelView.get(view1);
         TextView tempView2 = tempLabelView.get(view2);
 
+        tempView1.setText(textView1.getText());
+        tempView2.setText(textView2.getText());
+
+        int[] firstPosition = new int[2];
+        int[] secondPosition = new int[2];
+
+        textView1.getLocationOnScreen(firstPosition);
+        textView2.getLocationOnScreen(secondPosition);
+
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) textView1.getLayoutParams();
         int distance1 = layoutParams1.circleRadius;
-        //double angle1 = layoutParams1.circleAngle;
+        double angle1 = layoutParams1.circleAngle;
         ConstraintLayout.LayoutParams layoutParams2 = (ConstraintLayout.LayoutParams) textView2.getLayoutParams();
         int distance2 = layoutParams2.circleRadius;
-        //double angle2 = layoutParams2.circleAngle;
+        double angle2 = layoutParams2.circleAngle;
+
+        int absWidthDiff = 0;
+        int absHeightDiff = 0;
+        double absAngle = 0;
+        if(abs(firstPosition[0]) <= abs(secondPosition[0])) {
+            absWidthDiff = abs(firstPosition[0]) + textView1.getMeasuredWidth() - abs(secondPosition[0]);
+        } else {
+            absWidthDiff = abs(secondPosition[0]) + textView2.getMeasuredWidth() - abs(firstPosition[0]);
+        }
+        if(abs(firstPosition[1]) <= abs(secondPosition[1])) {
+            absHeightDiff = abs(firstPosition[1]) + textView1.getMeasuredHeight() - abs(secondPosition[1]);
+        } else {
+            absHeightDiff = abs(secondPosition[1]) + textView2.getMeasuredHeight() - abs(firstPosition[1]);
+        }
+
 
         if(distance1 <= distance2) {
 
-            if(distance1 > DpSpPxConversion.calculatePixels(25, context)) {
+            absAngle = Math.toRadians(angle1 - 90);
+            int absDiff = (int) (abs(cos(absAngle)) * absWidthDiff + abs(sin(absAngle)) * absHeightDiff);
+
+            Log.d("absAngle", ""+absAngle);
+            Log.d("absDiff", ""+absDiff);
+            Log.d("absWithDiff", "" + absWidthDiff);
+            if(distance1 > absDiff) {
 
                 ConstraintLayout.LayoutParams tempParams1 = (ConstraintLayout.LayoutParams) tempView1.getLayoutParams();
-                tempParams1.circleRadius = distance1 - DpSpPxConversion.calculatePixels(25, context);
+                tempParams1.circleRadius = distance1 - absDiff;
                 tempView1.setLayoutParams(tempParams1);
                 ConstraintLayout.LayoutParams tempParams2 = (ConstraintLayout.LayoutParams) tempView2.getLayoutParams();
                 tempParams2.circleRadius = distance2;
@@ -241,12 +275,19 @@ public class FriendViewAdaptor implements Serializable {
                 tempParams1.circleRadius = distance1;
                 tempView1.setLayoutParams(tempParams1);
                 ConstraintLayout.LayoutParams tempParams2 = (ConstraintLayout.LayoutParams) tempView2.getLayoutParams();
-                tempParams2.circleRadius = distance2 + DpSpPxConversion.calculatePixels(25, context);
+                tempParams2.circleRadius = distance2 + absDiff;
                 tempView2.setLayoutParams(tempParams2);
 
             }
 
         } else {
+
+            absAngle = Math.toRadians(angle2 - 90);
+            int absDiff = (int) (abs(cos(absAngle)) * absWidthDiff + abs(sin(absAngle)) * absHeightDiff);
+
+            Log.d("absAngle", ""+absAngle);
+            Log.d("absDiff", ""+absDiff);
+            Log.d("absWithDiff", "" + absWidthDiff);
 
             if(distance2 > DpSpPxConversion.calculatePixels(25, context)) {
 
@@ -254,13 +295,13 @@ public class FriendViewAdaptor implements Serializable {
                 tempParams1.circleRadius = distance1;
                 tempView1.setLayoutParams(tempParams1);
                 ConstraintLayout.LayoutParams tempParams2 = (ConstraintLayout.LayoutParams) tempView2.getLayoutParams();
-                tempParams2.circleRadius = distance2 - DpSpPxConversion.calculatePixels(25, context);
+                tempParams2.circleRadius = distance2 - absDiff;
                 tempView2.setLayoutParams(tempParams2);
 
             } else {
 
                 ConstraintLayout.LayoutParams tempParams1 = (ConstraintLayout.LayoutParams) tempView1.getLayoutParams();
-                tempParams1.circleRadius = distance1 + DpSpPxConversion.calculatePixels(25, context);
+                tempParams1.circleRadius = distance1 + absDiff;
                 tempView1.setLayoutParams(tempParams1);
                 ConstraintLayout.LayoutParams tempParams2 = (ConstraintLayout.LayoutParams) tempView2.getLayoutParams();
                 tempParams2.circleRadius = distance2;
