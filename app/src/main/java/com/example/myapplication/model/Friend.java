@@ -1,10 +1,10 @@
-package com.example.myapplication;
+package com.example.myapplication.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.myapplication.model.MeterToMile;
+import com.example.myapplication.Utilities;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -90,7 +90,7 @@ public class Friend {
                         Math.sin(dLong / 2) * Math.sin(dLong / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         distance = R * c;
-        distance = MeterToMile.toMile(distance); //meter to mile
+        distance = Utilities.toMile(distance); //meter to mile
         return distance;
     }
 

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +14,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.AddFriendDialog;
 import com.example.myapplication.FirstOpened;
-import com.example.myapplication.Friend;
+import com.example.myapplication.model.Friend;
 import com.example.myapplication.FriendViewAdaptor;
 import com.example.myapplication.LocationService;
 import com.example.myapplication.OrientationService;
@@ -23,6 +22,8 @@ import com.example.myapplication.R;
 import com.example.myapplication.ServerAPI;
 import com.example.myapplication.UIRotator;
 import com.example.myapplication.ZoomObserver;
+import com.example.myapplication.model.FriendDao;
+import com.example.myapplication.model.FriendDatabase;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
