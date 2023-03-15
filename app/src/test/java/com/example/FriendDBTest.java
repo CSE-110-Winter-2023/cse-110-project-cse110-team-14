@@ -1,6 +1,9 @@
 package com.example;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -9,9 +12,9 @@ import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.myapplication.Friend;
-import com.example.myapplication.activity.FriendDatabase;
-import com.example.myapplication.activity.FriendDao;
+import com.example.myapplication.model.Friend;
+import com.example.myapplication.model.FriendDao;
+import com.example.myapplication.model.FriendDatabase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-
 
 @RunWith(AndroidJUnit4.class)
 public class FriendDBTest {
@@ -44,6 +46,17 @@ public class FriendDBTest {
 
     @Test
     public void testGet(){
+        Friend f1 = new Friend("12345678", "name", 15, 15, 1);
+        long id = dao.upsert(f1);
+
+        Friend f = dao.get("12345678");
+        assertEquals(f.longitude, f1.longitude,0);
+        assertEquals(f.latitude, f1.latitude,0);
+        assertEquals(f.label, f1.label);
+    }
+
+    @Test
+    public void testDelete(){
         Friend friend = new Friend("d95a217f-8ab3-4d8e-b254-4f759e5fdb26", "John", 14,14,14);
         dao.upsert(friend);
         Friend insertedFriend = dao.get(friend.public_code);
@@ -82,4 +95,3 @@ public class FriendDBTest {
         db.close();
     }
 }
-

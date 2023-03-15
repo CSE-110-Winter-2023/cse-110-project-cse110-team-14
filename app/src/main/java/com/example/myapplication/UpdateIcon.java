@@ -4,9 +4,9 @@ import android.view.View;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.myapplication.model.Friend;
 import com.google.android.gms.maps.model.Marker;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class UpdateIcon {

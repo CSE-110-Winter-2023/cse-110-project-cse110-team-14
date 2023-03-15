@@ -1,19 +1,15 @@
 package com.example.myapplication;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.myapplication.model.DpSpPxConversion;
-import com.example.myapplication.model.OffsetCalculator;
+import com.example.myapplication.model.Friend;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -72,7 +68,7 @@ public class FriendViewAdaptor implements Serializable {
         if(!overlaps.get(i)){
             thisLabel.setText(friends.get(i).getLabel());
         }
-        boolean visible = CheckVisibility.checkDistance(zoomLevel, distance);
+        boolean visible = Utilities.checkDistance(zoomLevel, distance);
         if (!visible) {
             thisLabel.setVisibility(View.INVISIBLE);
             thisIcon.setVisibility(View.VISIBLE);
@@ -90,7 +86,7 @@ public class FriendViewAdaptor implements Serializable {
             }
 
             DistanceToDp temp = new DistanceToDp(distance, zoomLevel);
-            int pixels = DpSpPxConversion.calculatePixels(temp.calculateDp(), context);
+            int pixels = Utilities.calculatePixels(temp.calculateDp(), context);
             viewsFactory.changeDistance(thisLabel, pixels);
             checkOverlap(i);
         }
@@ -186,7 +182,7 @@ public class FriendViewAdaptor implements Serializable {
 
         if(distance1 <= distance2) {
 
-            int absDiff = OffsetCalculator.calculateOffset(absWidthDiff, absHeightDiff, Math.toRadians(angle1 - 90));
+            int absDiff = Utilities.calculateOffset(absWidthDiff, absHeightDiff, Math.toRadians(angle1 - 90));
 
             if(distance1 > absDiff) {
 
@@ -202,7 +198,7 @@ public class FriendViewAdaptor implements Serializable {
 
         } else {
 
-            int absDiff = OffsetCalculator.calculateOffset(absWidthDiff, absHeightDiff, Math.toRadians(angle2 - 90));
+            int absDiff = Utilities.calculateOffset(absWidthDiff, absHeightDiff, Math.toRadians(angle2 - 90));
 
             if(distance2 > absDiff) {
 

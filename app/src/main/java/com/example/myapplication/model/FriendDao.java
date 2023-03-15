@@ -1,14 +1,9 @@
-package com.example.myapplication.activity;
+package com.example.myapplication.model;
 
-import android.media.tv.TableRequest;
-
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Query;
 import androidx.room.Upsert;
-
-import com.example.myapplication.Friend;
 
 import java.util.List;
 

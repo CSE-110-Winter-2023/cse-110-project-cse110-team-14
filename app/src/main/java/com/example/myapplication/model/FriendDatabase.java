@@ -1,4 +1,4 @@
-package com.example.myapplication.activity;
+package com.example.myapplication.model;
 
 import android.content.Context;
 
@@ -6,8 +6,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-
-import com.example.myapplication.Friend;
 
 @Database(entities = {Friend.class}, version = 2, exportSchema = false)
 public abstract class FriendDatabase extends RoomDatabase {

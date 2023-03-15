@@ -69,7 +69,7 @@ public class OrientationService implements SensorEventListener {
             SensorManager.getOrientation(r, orientation);
 
 
-            this.azimuth.postValue(setOrientation.setOrientation(orientation));
+            this.azimuth.postValue(Utilities.setOrientation(orientation));
         }
     }
 

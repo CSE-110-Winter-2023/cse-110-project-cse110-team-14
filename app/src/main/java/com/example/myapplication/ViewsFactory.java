@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.myapplication.model.DpSpPxConversion;
+import com.example.myapplication.model.Friend;
 
 public class ViewsFactory {
 
@@ -27,7 +27,7 @@ public class ViewsFactory {
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
         );
         newLayoutParams1.circleConstraint = R.id.circle1;
-        newLayoutParams1.circleRadius = DpSpPxConversion.calculatePixels(180, context);
+        newLayoutParams1.circleRadius = Utilities.calculatePixels(180, context);
         newLayoutParams1.circleAngle = 0;
 
         TextView newText = new TextView(context);
@@ -44,7 +44,7 @@ public class ViewsFactory {
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
         );
         newLayoutParams2.circleConstraint = R.id.circle1;
-        newLayoutParams2.circleRadius = DpSpPxConversion.calculatePixels(180, context);
+        newLayoutParams2.circleRadius = Utilities.calculatePixels(180, context);
         newLayoutParams2.circleAngle = 0;
 
         ImageView newImage = new ImageView(context);

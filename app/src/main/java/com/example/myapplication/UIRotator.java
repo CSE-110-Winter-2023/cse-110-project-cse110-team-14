@@ -46,7 +46,7 @@ public class UIRotator implements SensorEventListener{
             if(success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
-                azimuth = setOrientation.setOrientation(orientation);
+                azimuth = Utilities.setOrientation(orientation);
             }
         }
         // rotation textviews here

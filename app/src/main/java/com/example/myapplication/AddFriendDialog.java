@@ -9,8 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.myapplication.activity.FriendDao;
-import com.example.myapplication.activity.FriendDatabase;
+import com.example.myapplication.model.Friend;
+import com.example.myapplication.model.FriendDao;
+import com.example.myapplication.model.FriendDatabase;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;

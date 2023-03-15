@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import androidx.test.core.app.ActivityScenario;
 
-import com.example.myapplication.model.DpSpPxConversion;
+import com.example.myapplication.Utilities;
 import com.example.myapplication.activity.MainActivity;
 
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class DpPxConversionTest {
     public void test1() {
         try(ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             scenario.onActivity(activity -> {
-                int result = DpSpPxConversion.calculatePixels(150, activity);
+                int result = Utilities.calculatePixels(150, activity);
                 assertEquals(result, 150);
             });
         }
@@ -29,7 +29,7 @@ public class DpPxConversionTest {
     public void test2() {
         try(ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             scenario.onActivity(activity -> {
-                int result = DpSpPxConversion.calculatePixels(300, activity);
+                int result = Utilities.calculatePixels(300, activity);
                 assertEquals(result, 300);
             });
         }
@@ -39,7 +39,7 @@ public class DpPxConversionTest {
     public void test3() {
         try(ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             scenario.onActivity(activity -> {
-                int result = DpSpPxConversion.calculatePixels(0, activity);
+                int result = Utilities.calculatePixels(0, activity);
                 assertEquals(result, 0);
             });
         }

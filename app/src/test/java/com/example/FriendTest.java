@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.myapplication.FirstOpened;
-import com.example.myapplication.Friend;
+import com.example.myapplication.model.Friend;
 
 import org.junit.Before;
 import org.junit.Test;

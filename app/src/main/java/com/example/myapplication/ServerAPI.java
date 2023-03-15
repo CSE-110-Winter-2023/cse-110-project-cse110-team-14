@@ -1,32 +1,19 @@
 package com.example.myapplication;
 
-import android.util.Log;
-
-import androidx.annotation.AnyThread;
 import androidx.annotation.WorkerThread;
-import androidx.lifecycle.MutableLiveData;
 
+import com.example.myapplication.model.Friend;
 import com.google.gson.Gson;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.internal.bind.DefaultDateTypeAdapter;
 
 import org.json.JSONObject;
 
 
-import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import okhttp3.FormBody;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import okhttp3.Response;
 
 public class ServerAPI {
@@ -37,7 +24,6 @@ public class ServerAPI {
     private String privateCode;
     private boolean firstTime;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
 
     public ServerAPI(String name, String UID, String privateCode) {
         myName = name;
