@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements TimeThread.TimeThreadCallback {
     final String START = "Start";
     private Button zoomIn;
     private Button zoomOut;
@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity{
     private FriendDao dao;
     private FriendDatabase db;
     private TimeThread timeThread;
-
-    private boolean runThread = true;
+    private long timeDifference;
+    private boolean GPSLoss = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,15 +117,17 @@ public class MainActivity extends AppCompatActivity{
 
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
-        timeThread = new TimeThread();
+        timeThread = new TimeThread(this);
         timeThread.start();
     }
 
     private class RequestThread implements Runnable {
         @Override
         public void run() {
-            for(int i = 0; i < friends.size(); i++) {
-                client.updateLocation(friends.get(i));
+            if (GPSLoss == false) {
+                for(int i = 0; i < friends.size(); i++) {
+                    client.updateLocation(friends.get(i));
+                }
             }
         }
     }
@@ -245,5 +247,10 @@ public class MainActivity extends AppCompatActivity{
         return zoom.getZoomLevel();
     }
 
-
+    @Override
+    public void onGPSLoss(boolean GPSLoss, long timeDifference) {
+        // Do something with the data passed from the TimeThread
+        this.GPSLoss = GPSLoss;
+        this.timeDifference = timeDifference;
+    }
 }
