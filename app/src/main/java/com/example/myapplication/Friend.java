@@ -1,16 +1,40 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.example.myapplication.model.MeterToMile;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "friends")
 public class Friend {
-    private String public_code;
-    private String label;
-    private double latitude;
-    private double longitude;
-    private int version;
-    private double distance;
-    private double relativeAngle;
+
+    @PrimaryKey
+    @SerializedName("public_code")
+    @NonNull
+    public String public_code;
+
+    @SerializedName("label")
+    @NonNull
+    public String label;
+
+    @SerializedName("latitude")
+    public double latitude;
+
+    @SerializedName("longitude")
+    public double longitude;
+
+    @SerializedName(value = "version")
+    public int version;
+
+    @SerializedName("distance")
+    public double distance;
+
+    @SerializedName("relative_angle")
+    public double relativeAngle;
 
     public Friend(String public_code, String label, double latitude, double longitude, int version){
         this.public_code = public_code;
@@ -81,5 +105,9 @@ public class Friend {
         bearing = (bearing + 360) % 360;
         relativeAngle = bearing - azimuth;
         return relativeAngle;
+    }
+
+    public static Friend fromJSON(String json) {
+        return new Gson().fromJson(json, Friend.class);
     }
 }

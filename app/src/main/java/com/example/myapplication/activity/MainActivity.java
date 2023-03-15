@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText inputURL;
     private String customizedURL;
     private static final String DEFAULT_SERVER_LINK = "https://socialcompass.goto.ucsd.edu/location/";
-
-
+    private FriendDao dao;
+    private FriendDatabase db;
     private float bearingAngle;
     private float azimuth = 0f;
 
@@ -62,6 +62,37 @@ public class MainActivity extends AppCompatActivity {
 
         this.setUp();
         this.setRingUI();
+        ui = new UIRotator(this);
+        
+        addFriend = findViewById(R.id.addFriendBtn);
+        addFriend.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
+            startActivity(intent);
+        });
+
+        orientationService = OrientationService.singleton(this);
+        this.reobserveOrientation();
+
+        locationService = LocationService.singleton(this);
+        this.reobserveLocation();
+
+        viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
+
+        db = FriendDatabase.provide(this);
+        dao = db.getDao();
+        var items = dao.getAll();
+        for(Friend l: items){
+            friends.add(l);
+        }
+        //for testing
+        for (int i = 0; i < friends.size(); ++i) {
+            viewAdaptor.addNewView(friends.get(i));
+        }
+
+
+        client = ServerAPI.provide();
+
+        executor = Executors.newScheduledThreadPool(1);
 
         this.setUpAddFriendButton();
 
@@ -137,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AddFriendDialog dialog = new AddFriendDialog(context);
-                dialog.addNewFriendDialog(friends, viewAdaptor);
+                dialog.addNewFriendDialog(friends, viewAdaptor, db, dao);
             }
         });
     }
@@ -209,5 +240,6 @@ public class MainActivity extends AppCompatActivity {
     public int getZoomLevel() {
         return zoom.getZoomLevel();
     }
+
 
 }
