@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,7 @@ import com.example.myapplication.LocationService;
 import com.example.myapplication.OrientationService;
 import com.example.myapplication.R;
 import com.example.myapplication.ServerAPI;
+import com.example.myapplication.TimeThread;
 import com.example.myapplication.UIRotator;
 import com.example.myapplication.UpdateIcon;
 import com.example.myapplication.ZoomObserver;
@@ -50,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     final String START = "Start";
     private Button zoomIn;
     private Button zoomOut;
@@ -69,10 +72,9 @@ public class MainActivity extends AppCompatActivity {
     private Button addFriend;
     private FriendDao dao;
     private FriendDatabase db;
+    private TimeThread timeThread;
 
-
-    private float bearingAngle;
-    private float azimuth = 0f;
+    private boolean runThread = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +105,9 @@ public class MainActivity extends AppCompatActivity {
         for(Friend l: items){
             friends.add(l);
         }
-        //for testing
         for (int i = 0; i < friends.size(); ++i) {
             viewAdaptor.addNewView(friends.get(i));
         }
-
 
         client = ServerAPI.provide();
 
@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
+        timeThread = new TimeThread();
+        timeThread.start();
     }
 
     private class RequestThread implements Runnable {
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         executor.shutdown();
+        timeThread.stopThread();
     }
 
     private void setUp(){
@@ -234,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
             double distance = friends.get(i).calculateDistance(myLocation);
             viewAdaptor.changeDistance(i, distance, zoom.getZoomLevel());
         }
+        timeThread.updateLastUpdateTime();
     }
 
     @VisibleForTesting

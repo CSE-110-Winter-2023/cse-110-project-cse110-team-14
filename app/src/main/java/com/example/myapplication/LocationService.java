@@ -6,9 +6,11 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.OnNmeaMessageListener;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -27,7 +29,6 @@ public class LocationService implements LocationListener {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-
 
     private final AppCompatActivity activity;
 
@@ -56,6 +57,8 @@ public class LocationService implements LocationListener {
         // Register sensor listeners
         withLocationPermissions(this::registerLocationListener);
     }
+
+
 
     /**  This will only be called when we for sure have permissions. */
     @RequiresPermission(anyOf = {ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION})
@@ -103,4 +106,5 @@ public class LocationService implements LocationListener {
     public LiveData<Pair<Double, Double>> getLocation() {
         return this.locationValue;
     }
+
 }
