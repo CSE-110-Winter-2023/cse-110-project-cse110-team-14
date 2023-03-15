@@ -16,4 +16,27 @@ public class MetertoMileTest {
         assertEquals(0.0006835081, result, 0);
     }
 
+    @Test
+    public void test2() {
+        double meter = 1;
+        double result = Utilities.toMile(meter);
+
+        assertEquals(0.000621371, result, 0);
+    }
+
+    @Test
+    public void test3() {
+        double meter = 0;
+        double result = Utilities.toMile(meter);
+
+        assertEquals(0, result, 0);
+    }
+
+    @Test
+    public void test4() {
+        double meter = 2;
+        double result = Utilities.toMile(meter);
+
+        assertEquals(0.001242742, result, 0);
+    }
 }
