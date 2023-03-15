@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.DpSpPxConversion;
+import com.example.myapplication.model.DpSpPxConversion;
 import com.example.myapplication.R;
 import com.example.myapplication.UpdateCameraLocation;
 import com.example.myapplication.UpdateIcon;

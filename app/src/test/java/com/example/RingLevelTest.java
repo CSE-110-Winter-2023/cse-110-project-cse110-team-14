@@ -4,13 +4,9 @@ package com.example;
 import static org.junit.Assert.assertEquals;
 
 import android.widget.Button;
-import android.widget.ImageView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.test.core.app.ActivityScenario;
 
-import com.example.myapplication.DpSpPxConversion;
-import com.example.myapplication.Friend;
 import com.example.myapplication.R;
 import com.example.myapplication.activity.MainActivity;
 

@@ -1,30 +1,19 @@
 package com.example.myapplication.activity;
 
 import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.util.Pair;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.AddFriendDialog;
-import com.example.myapplication.CheckVisibility;
-import com.example.myapplication.DistanceToDp;
-import com.example.myapplication.DpSpPxConversion;
 import com.example.myapplication.FirstOpened;
 import com.example.myapplication.Friend;
 import com.example.myapplication.FriendViewAdaptor;
@@ -33,22 +22,13 @@ import com.example.myapplication.OrientationService;
 import com.example.myapplication.R;
 import com.example.myapplication.ServerAPI;
 import com.example.myapplication.UIRotator;
-import com.example.myapplication.UpdateIcon;
 import com.example.myapplication.ZoomObserver;
-import com.example.myapplication.model.LocationItem;
-import com.example.myapplication.model.MeterToMile;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
     final String START = "Start";
@@ -67,10 +47,12 @@ public class MainActivity extends AppCompatActivity {
     private FriendViewAdaptor viewAdaptor;
     private Context context = this;
     private Button addFriend;
+    private Button save;
+    private EditText inputURL;
+    private String customizedURL;
+    private static final String DEFAULT_SERVER_LINK = "https://socialcompass.goto.ucsd.edu/location/";
     private FriendDao dao;
     private FriendDatabase db;
-
-
     private float bearingAngle;
     private float azimuth = 0f;
 
@@ -81,21 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.setUp();
         this.setRingUI();
-        ui = new UIRotator(this);
-        
-        addFriend = findViewById(R.id.addFriendBtn);
-        addFriend.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
-            startActivity(intent);
-        });
-
-        orientationService = OrientationService.singleton(this);
-        this.reobserveOrientation();
-
-        locationService = LocationService.singleton(this);
-        this.reobserveLocation();
-
-        viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
 
         db = FriendDatabase.provide(this);
         dao = db.getDao();
@@ -108,9 +75,6 @@ public class MainActivity extends AppCompatActivity {
             viewAdaptor.addNewView(friends.get(i));
         }
 
-
-        client = ServerAPI.provide();
-
         executor = Executors.newScheduledThreadPool(1);
 
         this.setUpAddFriendButton();
@@ -122,8 +86,12 @@ public class MainActivity extends AppCompatActivity {
     private class RequestThread implements Runnable {
         @Override
         public void run() {
-            for(int i = 0; i < friends.size(); i++) {
-                client.updateLocation(friends.get(i));
+            if(open.isUidGenerated()) {
+                client = ServerAPI.provide(open.getName(), open.getUID(), open.getPrivateKey());
+                for(int i = 0; i < friends.size(); i++) {
+                    client.updateLocation(friends.get(i), customizedURL);
+                }
+                client.uploadLocation(myLocation, customizedURL);
             }
         }
     }
@@ -159,8 +127,11 @@ public class MainActivity extends AppCompatActivity {
         this.reobserveOrientation();
         this.reobserveLocation();
 
+        save = findViewById(R.id.saveURL);
+        inputURL = findViewById(R.id.URL);
+        customizedURL = DEFAULT_SERVER_LINK;
         viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
-        client = ServerAPI.provide();
+        //Toast.makeText(this, open.getUID(), Toast.LENGTH_LONG).show();
         executor = Executors.newScheduledThreadPool(1);
     }
 
@@ -179,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddFriendDialog dialog = new AddFriendDialog(context);
+                AddFriendDialog dialog = new AddFriendDialog(context, client);
                 dialog.addNewFriendDialog(friends, viewAdaptor, db, dao);
             }
         });
@@ -208,6 +179,18 @@ public class MainActivity extends AppCompatActivity {
             zoomIn.setAlpha(1);
             zoomIn.setClickable(true);
         }
+    }
+
+    public void onSaveURLClicked(View v) {
+
+        String url = inputURL.getText().toString();
+        if(!url.isEmpty()) {
+            customizedURL = url;
+            Toast.makeText(this, "URL inputted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Please enter an URL", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void reobserveOrientation() {

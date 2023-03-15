@@ -19,6 +19,8 @@ public class FirstOpened {
     final String START = "Start";
     final String NAME_KEY = "name";
     final String UID_KEY = "uid";
+    final String PRIVATE_KEY = "private";
+    final String UID_GENERATED_Key = "uidGenerated";
     private Activity mainAct;
     private Context mainCon;
     private SharedPreferences checkStart;
@@ -30,6 +32,7 @@ public class FirstOpened {
     private Button save;
     private String inputName;
     private String UID;
+    private String privateKey;
 
     public FirstOpened(Activity act, Context context){
         mainAct = act;
@@ -46,6 +49,10 @@ public class FirstOpened {
     public String getUID(){
         return checkStart.getString(UID_KEY, "");
     }
+    public String getPrivateKey(){
+        return checkStart.getString(PRIVATE_KEY, "");
+    }
+    public boolean isUidGenerated() { return checkStart.getBoolean(UID_GENERATED_Key, false); }
 
     @VisibleForTesting
     public void setName(String name){
@@ -60,7 +67,6 @@ public class FirstOpened {
         if(checkStart.getBoolean("first", true)) {
             Log.d("open new","1st");
             Dialog();
-            checkStart.edit().putBoolean("first", false).commit();
         }
         else{
             TextView uid = mainAct.findViewById(R.id.uid);
@@ -87,10 +93,14 @@ public class FirstOpened {
             public void onClick(View v) {
                 inputName = name.getText().toString();
                 if(checkName(inputName)){
+                    checkStart.edit().putBoolean("first", false).commit();
                     editor.putString(NAME_KEY, inputName);
 
                     UID = createUID();
                     editor.putString(UID_KEY, UID);
+                    privateKey = createUID();
+                    editor.putString(PRIVATE_KEY, privateKey);
+                    editor.putBoolean(UID_GENERATED_Key, true);
                     editor.apply();
 
                     dialog.dismiss();
