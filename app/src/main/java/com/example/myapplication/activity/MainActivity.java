@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -62,21 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.setUp();
         this.setRingUI();
-        ui = new UIRotator(this);
-        
-        addFriend = findViewById(R.id.addFriendBtn);
-        addFriend.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
-            startActivity(intent);
-        });
-
-        orientationService = OrientationService.singleton(this);
-        this.reobserveOrientation();
-
-        locationService = LocationService.singleton(this);
-        this.reobserveLocation();
-
-        viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
 
         db = FriendDatabase.provide(this);
         dao = db.getDao();
@@ -88,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < friends.size(); ++i) {
             viewAdaptor.addNewView(friends.get(i));
         }
-
-
-        client = ServerAPI.provide();
 
         executor = Executors.newScheduledThreadPool(1);
 
@@ -167,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddFriendDialog dialog = new AddFriendDialog(context);
+                AddFriendDialog dialog = new AddFriendDialog(context, client);
                 dialog.addNewFriendDialog(friends, viewAdaptor, db, dao);
             }
         });

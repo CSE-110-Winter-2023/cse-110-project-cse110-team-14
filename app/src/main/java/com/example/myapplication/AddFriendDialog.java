@@ -27,10 +27,11 @@ public class AddFriendDialog {
     private Button mAddButton;
     private Button mCancelButton;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private ServerAPI api = new ServerAPI();
+    private ServerAPI api;
 
-    public AddFriendDialog(Context context){
+    public AddFriendDialog(Context context, ServerAPI api){
         this.context = context;
+        this.api = api;
     }
 
     public void addNewFriendDialog(ArrayList<Friend> friends, FriendViewAdaptor viewAdaptor, FriendDatabase db, FriendDao dao) {

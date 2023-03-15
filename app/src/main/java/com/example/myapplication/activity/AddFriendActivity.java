@@ -35,7 +35,7 @@ public class AddFriendActivity extends AppCompatActivity {
         this.setUpAddButton();
         this.setUpCancelButton();
     }
-        ServerAPI api = new ServerAPI();
+        ServerAPI api;
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
