@@ -124,11 +124,9 @@ public class FriendViewAdaptor implements Serializable {
                         view1.getLocationOnScreen(firstPosition);
                         view2.getLocationOnScreen(secondPosition);
 
-                        boolean tf = viewsFactory.isOverLapping(view1, view2);
-
-                        if (tf) {
+                        if (viewsFactory.isOverLapping(view1, view2)) {
                             //Log.d("overlap", "overlapped--"+viewNumber);
-                            Log.d("overlap", "overlapped--"+i);
+                            //Log.d("overlap", "overlapped--"+i);
                             overlaps.set(viewNumber, true);
                             overlaps.set(i, true);
                             overallOverlap = true;
@@ -137,10 +135,6 @@ public class FriendViewAdaptor implements Serializable {
                             int absHeightDiff = viewsFactory.getHeightOverlap(view1, view2);
 
                             solveOverlap(viewNumber, i, absWidthDiff, absHeightDiff);
-
-                        } else {
-                            //Log.d("NO overlap", "not overlapped--"+i);
-                            //overlaps.set(i, false);
                         }
                     }
                 }
@@ -229,9 +223,8 @@ public class FriendViewAdaptor implements Serializable {
         TextView textView2 = labelView.get(view2);
         TextView tempView1 = tempLabelView.get(view1);
         TextView tempView2 = tempLabelView.get(view2);
-        int num = diff / 20 + 1;
-        Log.d("diff", String.valueOf(num));
 
+        int num = diff / 20 + 1;
         int size1 = textView1.length();
         int size2 = textView2.length();
 

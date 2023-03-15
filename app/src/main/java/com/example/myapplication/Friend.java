@@ -23,35 +23,27 @@ public class Friend {
     public void setPublic_code(String public_code) {
         this.public_code = public_code;
     }
-
     public void setLabel(String label) {
         this.label = label;
     }
-
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
-
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-
     public void setVersion(int version) {
         this.version = version;
     }
-
     public String getPublic_code() {
         return this.public_code;
     }
-
     public String getLabel() {
         return this.label;
     }
-
     public double getLatitude() {
         return this.latitude;
     }
-
     public double getLongitude() {
         return this.longitude;
     }
@@ -61,7 +53,6 @@ public class Friend {
     public double getDistance() {
         return this.distance;
     }
-
     public double getRelativeAngle() {
         return this.relativeAngle;
     }
