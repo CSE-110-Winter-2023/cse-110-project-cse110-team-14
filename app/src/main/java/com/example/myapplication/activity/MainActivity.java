@@ -8,7 +8,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.AddFriendDialog;
 import com.example.myapplication.FirstOpened;
@@ -44,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private FriendViewAdaptor viewAdaptor;
     private Context context = this;
     private Button addFriend;
+    private Button save;
+    private EditText inputURL;
+    private String customizedURL;
+    private static final String DEFAULT_SERVER_LINK = "https://socialcompass.goto.ucsd.edu/location/";
 
 
     private float bearingAngle;
@@ -69,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
             if(open.isUidGenerated()) {
                 client = ServerAPI.provide(open.getName(), open.getUID(), open.getPrivateKey());
                 for(int i = 0; i < friends.size(); i++) {
-                    client.updateLocation(friends.get(i));
+                    client.updateLocation(friends.get(i), customizedURL);
                 }
-                client.uploadLocation(myLocation);
+                client.uploadLocation(myLocation, customizedURL);
             }
         }
     }
@@ -107,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
         this.reobserveOrientation();
         this.reobserveLocation();
 
+        save = findViewById(R.id.saveURL);
+        inputURL = findViewById(R.id.URL);
+        customizedURL = DEFAULT_SERVER_LINK;
         viewAdaptor = new FriendViewAdaptor(this, findViewById(R.id.constraintLayout));
         //Toast.makeText(this, open.getUID(), Toast.LENGTH_LONG).show();
         executor = Executors.newScheduledThreadPool(1);
@@ -156,6 +165,18 @@ public class MainActivity extends AppCompatActivity {
             zoomIn.setAlpha(1);
             zoomIn.setClickable(true);
         }
+    }
+
+    public void onSaveURLClicked(View v) {
+
+        String url = inputURL.getText().toString();
+        if(!url.isEmpty()) {
+            customizedURL = url;
+            Toast.makeText(this, "URL inputted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Please enter an URL", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void reobserveOrientation() {

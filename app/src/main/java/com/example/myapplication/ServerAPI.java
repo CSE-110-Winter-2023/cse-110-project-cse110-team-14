@@ -6,6 +6,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.WorkerThread;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.internal.bind.DefaultDateTypeAdapter;
 
 import org.json.JSONObject;
 
@@ -22,7 +23,6 @@ import okhttp3.RequestBody;
 
 public class ServerAPI {
     private volatile static ServerAPI instance = null;
-
     private OkHttpClient client;
     private String myName;
     private String myUID;
@@ -48,12 +48,13 @@ public class ServerAPI {
 
 
     @WorkerThread
-    public void updateLocation(Friend friend) {
+    public void updateLocation(Friend friend, String url) {
         // URLs cannot contain spaces, so we replace them with %20.
         String encodedMsg = friend.getPublic_code().replace(" ", "%20");
+        String encodedURL = url.replace(" ", "n%20");
 
         var request = new Request.Builder()
-                .url("https://socialcompass.goto.ucsd.edu/location/" + encodedMsg)
+                .url(encodedURL + encodedMsg)
                 .method("GET", null)
                 .build();
 
@@ -73,7 +74,9 @@ public class ServerAPI {
         }
     }
 
-    public void uploadLocation(LatLng myLocation) {
+    public void uploadLocation(LatLng myLocation, String url) {
+
+        String encodedURL = url.replace(" ", "n%20");
 
         String postBody = "{\n"
                 + "\"private_code\": \"" + privateCode + "\",\n"
@@ -85,7 +88,7 @@ public class ServerAPI {
         var requestBody = RequestBody.create(postBody, JSON);
 
         var request = new Request.Builder()
-                .url("https://socialcompass.goto.ucsd.edu/location/" + myUID)
+                .url(encodedURL + myUID)
                 .method("PUT", requestBody)
                 .build();
 
