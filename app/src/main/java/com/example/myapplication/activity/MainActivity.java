@@ -20,6 +20,7 @@ import com.example.myapplication.LocationService;
 import com.example.myapplication.OrientationService;
 import com.example.myapplication.R;
 import com.example.myapplication.ServerAPI;
+import com.example.myapplication.TimeThread;
 import com.example.myapplication.UIRotator;
 import com.example.myapplication.ZoomObserver;
 import com.example.myapplication.model.FriendDao;
@@ -31,7 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TimeThread.TimeThreadCallback{
     final String START = "Start";
     private Button zoomIn;
     private Button zoomOut;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
     private FriendDatabase db;
     private float bearingAngle;
     private float azimuth = 0f;
+    private TimeThread timeThread;
+    private long timeDifference;
+    private boolean GPSLoss = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +86,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
+        timeThread = new TimeThread(this);
     }
 
     private class RequestThread implements Runnable {
         @Override
         public void run() {
             if(open.isUidGenerated()) {
-                client = ServerAPI.provide(open.getName(), open.getUID(), open.getPrivateKey());
-                for(int i = 0; i < friends.size(); i++) {
-                    client.updateLocation(friends.get(i), customizedURL);
+                if (GPSLoss == false) {
+                    client = ServerAPI.provide(open.getName(), open.getUID(), open.getPrivateKey());
+                    for(int i = 0; i < friends.size(); i++) {
+                        client.updateLocation(friends.get(i), customizedURL);
+                    }
+                    client.uploadLocation(myLocation, customizedURL);
                 }
-                client.uploadLocation(myLocation, customizedURL);
             }
         }
     }
@@ -117,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         executor.shutdown();
+        timeThread.stopThread();
     }
 
     private void setUp(){
@@ -218,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
             double distance = friends.get(i).calculateDistance(myLocation);
             viewAdaptor.changeDistance(i, distance, zoom.getZoomLevel());
         }
+        timeThread.updateLastUpdateTime();
     }
 
     @VisibleForTesting
@@ -225,5 +234,10 @@ public class MainActivity extends AppCompatActivity {
         return zoom.getZoomLevel();
     }
 
+    public void onGPSLoss(boolean GPSLoss, long timeDifference) {
+        // Do something with the data passed from the TimeThread
+        this.GPSLoss = GPSLoss;
+        this.timeDifference = timeDifference;
+    }
 
 }
