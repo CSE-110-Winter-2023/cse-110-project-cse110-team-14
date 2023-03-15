@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 import androidx.test.core.app.ActivityScenario;
 
-import com.example.myapplication.DpSpPxConversion;
+import com.example.myapplication.model.DpSpPxConversion;
 import com.example.myapplication.activity.MainActivity;
 
 import org.junit.Test;
