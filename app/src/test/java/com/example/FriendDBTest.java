@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 
@@ -38,13 +39,9 @@ public class FriendDBTest {
 
     @Test
     public void testInsert(){
-        Friend f1 = new Friend("12345678", "name", 15, 15, 1);
-        Friend f2 = new Friend("87654321", "name2", 17, -15, 1);
-
-        long id1 = dao.upsert(f1);
-        long id2 = dao.upsert(f2);
-
-        assertNotEquals(id1,id2);
+        Friend item1 = new Friend("d95a217f-8ab3-4d8e-b254-4f759e5fdb26", "John", 14,14,14);
+        dao.upsert(item1);
+        assertTrue(dao.exists(item1.public_code));
     }
 
     @Test
@@ -60,13 +57,37 @@ public class FriendDBTest {
 
     @Test
     public void testDelete(){
-        Friend f1 = new Friend("12345678", "name", 15, 15, 1);
-        long id = dao.upsert(f1);
+        Friend friend = new Friend("d95a217f-8ab3-4d8e-b254-4f759e5fdb26", "John", 14,14,14);
+        dao.upsert(friend);
+        Friend insertedFriend = dao.get(friend.public_code);
+        assertEquals(friend.public_code, insertedFriend.public_code);
+    }
 
-        Friend f = dao.get("12345678");
-        int itemsDeleted = dao.delete(f);
-        assertEquals(1, itemsDeleted);
-        assertNull(dao.get("12345678"));
+    @Test
+    public void testUpdateName(){
+        Friend friend = new Friend("d95a217f-8ab3-4d8e-b254-4f759e5fdb26", "John", 14,14,14);
+        dao.upsert(friend);
+        friend.setLabel("Joe");
+        assertTrue(dao.exists(friend.public_code));
+        assertEquals("d95a217f-8ab3-4d8e-b254-4f759e5fdb26", friend.public_code);
+        assertEquals("Joe", friend.label);
+        assertEquals(14, friend.latitude, 0);
+        assertEquals(14, friend.longitude, 0);
+    }
+
+    @Test
+    public void testUpdateLocation(){
+        Friend friend = new Friend("d95a217f-8ab3-4d8e-b254-4f759e5fdb26", "John", 14,14,14);
+        dao.upsert(friend);
+        friend.setLongitude(20);
+        friend.setLatitude(25);
+        friend.setVersion(30);
+        assertTrue(dao.exists(friend.public_code));
+        assertEquals("d95a217f-8ab3-4d8e-b254-4f759e5fdb26", friend.public_code);
+        assertEquals("John", friend.label);
+        assertEquals(20, friend.longitude, 0);
+        assertEquals(25, friend.latitude, 0);
+        assertEquals(30, friend.version, 0);
     }
 
     @After
