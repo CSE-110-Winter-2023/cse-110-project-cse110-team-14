@@ -168,9 +168,7 @@ public class FriendViewAdaptor implements Serializable {
                         Rect rectSecondView = new Rect(secondPosition[0], secondPosition[1],
                                 secondPosition[0] + view2.getMeasuredWidth(), secondPosition[1] + view2.getMeasuredHeight());
 
-
                         boolean tf = rectFirstView.intersect(rectSecondView);
-                        int widthDiff = abs(firstPosition[0] - secondPosition[0]);
 
                         if (tf) {
                             //Log.d("overlap", "overlapped--"+viewNumber);
@@ -192,7 +190,7 @@ public class FriendViewAdaptor implements Serializable {
                                 absHeightDiff = abs(secondPosition[1]) + view2.getMeasuredHeight() - abs(firstPosition[1]);
                             }
 
-                            solveOverlap(viewNumber, i, widthDiff, absWidthDiff, absHeightDiff);
+                            solveOverlap(viewNumber, i, absWidthDiff, absHeightDiff);
 
                         } else {
                             //Log.d("NO overlap", "not overlapped--"+i);
@@ -208,14 +206,14 @@ public class FriendViewAdaptor implements Serializable {
         }
     }
 
-    private void solveOverlap(int view1, int view2, int diff, int absWidthDiff, int absHeightDiff){
+    private void solveOverlap(int view1, int view2, int absWidthDiff, int absHeightDiff){
         double d1 = friends.get(view1).getDistance();
         double d2 = friends.get(view2).getDistance();
 
         if(checkLevel(d1) == checkLevel(d2)) {
             offSet(view1, view2, absWidthDiff, absHeightDiff);
         }  else {
-            truncate(view1, view2, diff);
+            truncate(view1, view2, absWidthDiff);
         }
     }
 
@@ -318,24 +316,29 @@ public class FriendViewAdaptor implements Serializable {
         TextView textView2 = labelView.get(view2);
         TextView tempView1 = tempLabelView.get(view1);
         TextView tempView2 = tempLabelView.get(view2);
-
-        int num = 0;
-        if(diff < 50){
-            num = 4;
-        } else if(diff < 100){
-            num = 3;
-        } else if(diff < 150) {
-            num = 2;
-        } else {
-            num = 1;
-        }
+        int num = diff / 20 + 1;
+        Log.d("diff", String.valueOf(num));
 
         int size1 = textView1.length();
         int size2 = textView2.length();
 
-        String text1 = textView1.getText().toString().substring(0, size1 - num);
-        String text2 = textView2.getText().toString().substring(0, size2 - num);
-        Log.d("truncate", "num1: "+view1+", num2: "+view2);
+        String text1;
+        if(num >= size1){
+            text1 = textView1.getText().toString().substring(0, 1);
+        }
+        else{
+            text1 = textView1.getText().toString().substring(0, size1 - num);
+        }
+
+        String text2;
+        if(num >= size2){
+            text2 = textView2.getText().toString().substring(0, 1);
+        }
+        else {
+            text2 = textView2.getText().toString().substring(0, size2 - num);
+        }
+
+        //Log.d("truncate", "num1: "+view1+", num2: "+view2);
         tempView1.setText(text1);
         tempView2.setText(text2);
 
