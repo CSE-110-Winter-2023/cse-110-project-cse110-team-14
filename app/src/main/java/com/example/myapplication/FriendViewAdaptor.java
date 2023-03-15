@@ -167,6 +167,8 @@ public class FriendViewAdaptor implements Serializable {
                                 firstPosition[0] + view1.getMeasuredWidth(), firstPosition[1] + view1.getMeasuredHeight());
                         Rect rectSecondView = new Rect(secondPosition[0], secondPosition[1],
                                 secondPosition[0] + view2.getMeasuredWidth(), secondPosition[1] + view2.getMeasuredHeight());
+
+
                         boolean tf = rectFirstView.intersect(rectSecondView);
                         int widthDiff = abs(firstPosition[0] - secondPosition[0]);
 
@@ -176,7 +178,21 @@ public class FriendViewAdaptor implements Serializable {
                             overlaps.set(viewNumber, true);
                             overlaps.set(i, true);
                             overallOverlap = true;
-                            solveOverlap(viewNumber, i, widthDiff);
+
+                            int absWidthDiff = 0;
+                            int absHeightDiff = 0;
+                            if(abs(firstPosition[0]) <= abs(secondPosition[0])) {
+                                absWidthDiff = abs(firstPosition[0]) + view1.getMeasuredWidth() - abs(secondPosition[0]);
+                            } else {
+                                absWidthDiff = abs(secondPosition[0]) + view2.getMeasuredWidth() - abs(firstPosition[0]);
+                            }
+                            if(abs(firstPosition[1]) <= abs(secondPosition[1])) {
+                                absHeightDiff = abs(firstPosition[1]) + view1.getMeasuredHeight() - abs(secondPosition[1]);
+                            } else {
+                                absHeightDiff = abs(secondPosition[1]) + view2.getMeasuredHeight() - abs(firstPosition[1]);
+                            }
+
+                            solveOverlap(viewNumber, i, widthDiff, absWidthDiff, absHeightDiff);
 
                         } else {
                             //Log.d("NO overlap", "not overlapped--"+i);
@@ -192,12 +208,12 @@ public class FriendViewAdaptor implements Serializable {
         }
     }
 
-    private void solveOverlap(int view1, int view2, int diff){
+    private void solveOverlap(int view1, int view2, int diff, int absWidthDiff, int absHeightDiff){
         double d1 = friends.get(view1).getDistance();
         double d2 = friends.get(view2).getDistance();
 
         if(checkLevel(d1) == checkLevel(d2)) {
-            offSet(view1, view2);
+            offSet(view1, view2, absWidthDiff, absHeightDiff);
         }  else {
             truncate(view1, view2, diff);
         }
@@ -214,7 +230,7 @@ public class FriendViewAdaptor implements Serializable {
             return 4;
         }
     }
-    private void offSet(int view1, int view2){
+    private void offSet(int view1, int view2, int absWidthDiff, int absHeightDiff){
 
         TextView textView1 = labelView.get(view1);
         TextView textView2 = labelView.get(view2);
@@ -237,20 +253,7 @@ public class FriendViewAdaptor implements Serializable {
         int distance2 = layoutParams2.circleRadius;
         double angle2 = layoutParams2.circleAngle;
 
-        int absWidthDiff = 0;
-        int absHeightDiff = 0;
         double absAngle = 0;
-        if(abs(firstPosition[0]) <= abs(secondPosition[0])) {
-            absWidthDiff = abs(firstPosition[0]) + textView1.getMeasuredWidth() - abs(secondPosition[0]);
-        } else {
-            absWidthDiff = abs(secondPosition[0]) + textView2.getMeasuredWidth() - abs(firstPosition[0]);
-        }
-        if(abs(firstPosition[1]) <= abs(secondPosition[1])) {
-            absHeightDiff = abs(firstPosition[1]) + textView1.getMeasuredHeight() - abs(secondPosition[1]);
-        } else {
-            absHeightDiff = abs(secondPosition[1]) + textView2.getMeasuredHeight() - abs(firstPosition[1]);
-        }
-
 
         if(distance1 <= distance2) {
 
