@@ -22,6 +22,7 @@ public class TimeThread extends Thread{
                 // Do something if time difference is greater than 1 minute
                 // For example, send a notification or update the UI
                 mCallback.onGPSLoss(true, timeDifference);
+                System.out.println("GPS LOSS");
             }
             else {
                 mCallback.onGPSLoss(false, timeDifference);
