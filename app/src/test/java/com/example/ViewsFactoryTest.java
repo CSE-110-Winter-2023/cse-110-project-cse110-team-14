@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.myapplication.ViewsFactory;
 import com.example.myapplication.model.Friend;
@@ -25,7 +26,7 @@ public class ViewsFactoryTest {
 
     @Before
     public void create(){
-        this.context = ApplicationProvider.getApplicationContext();
+        this.context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         viewsFactory = new ViewsFactory(context);
 
         ConstraintLayout.LayoutParams newLayoutParams1 = new ConstraintLayout.LayoutParams(
