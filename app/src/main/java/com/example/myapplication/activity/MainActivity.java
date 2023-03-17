@@ -94,9 +94,6 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
 
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
-
-        timeThread = new TimeThread(this);
-        timeThread.start();
     }
 
     private class RequestThread implements Runnable {
