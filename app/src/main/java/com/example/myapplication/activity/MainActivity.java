@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
                     }
                     client.uploadLocation(myLocation, customizedURL);
                 }
-                Log.d("GPS Connectivity", ""+GPSConnectivity);
+                //Log.d("GPS Connectivity", ""+GPSConnectivity);
             }
         }
     }
