@@ -6,6 +6,7 @@ import androidx.core.util.Pair;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
         timeThread = new TimeThread(this);
+        timeThread.start();
     }
 
     private class RequestThread implements Runnable {
@@ -217,6 +219,10 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         for(int i = 0; i < friends.size(); i++) {
             double angle = friends.get(i).calculateRelativeAngle(myLocation.latitude, myLocation.longitude, orientation);
             viewAdaptor.changeAngle(i, angle);
+            if(GPSLoss) {
+                double distance = friends.get(i).getDistance();
+                viewAdaptor.changeDistance(i, distance, zoom.getZoomLevel());
+            }
         }
     }
 

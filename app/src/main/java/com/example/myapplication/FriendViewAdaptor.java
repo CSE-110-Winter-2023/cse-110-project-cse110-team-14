@@ -249,4 +249,14 @@ public class FriendViewAdaptor implements Serializable {
         viewsFactory.changeDistance(tempView1, distance1);
         viewsFactory.changeDistance(tempView2, distance2);
     }
+
+    public ArrayList<Friend> getFriends() { return friends; }
+
+    public ArrayList<TextView> getLabelView() {return labelView;}
+
+    public ArrayList<ImageView> getIconView() {return iconView;}
+
+    public ArrayList<TextView> getTempLabelView() {return tempLabelView;}
+
+    public ArrayList<Boolean> getOverlaps() {return overlaps;}
 }

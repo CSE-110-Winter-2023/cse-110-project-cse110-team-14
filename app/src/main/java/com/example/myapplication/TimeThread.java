@@ -18,7 +18,7 @@ public class TimeThread extends Thread{
         while (isRunning) {
             long currentTime = System.currentTimeMillis();
             long timeDifference = currentTime - lastUpdateTime;
-            if (timeDifference >= 10000) { // 1 minute in milliseconds
+            if (timeDifference >= 5000) { // 1 minute in milliseconds
                 // Do something if time difference is greater than 1 minute
                 // For example, send a notification or update the UI
                 mCallback.onGPSLoss(true, timeDifference);
