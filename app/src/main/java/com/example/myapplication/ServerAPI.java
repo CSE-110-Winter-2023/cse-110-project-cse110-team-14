@@ -27,6 +27,10 @@ public class ServerAPI {
     private boolean firstTime;
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+    public ServerAPI() {
+        this.client = new OkHttpClient();
+    }
+
     public ServerAPI(String name, String UID, String privateCode) {
         myName = name;
         myUID = UID;

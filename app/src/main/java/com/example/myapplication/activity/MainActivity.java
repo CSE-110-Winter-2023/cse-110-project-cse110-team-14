@@ -6,7 +6,9 @@ import androidx.core.util.Pair;
 
 import android.content.Context;
 import android.os.Bundle;
+
 import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -92,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
 
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
+
+        timeThread = new TimeThread(this);
+        timeThread.start();
     }
 
     private class RequestThread implements Runnable {
