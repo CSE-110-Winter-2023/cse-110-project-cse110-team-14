@@ -170,9 +170,10 @@ public class FriendViewAdaptor implements Serializable {
         TextView textView2 = labelView.get(view2);
         TextView tempView1 = tempLabelView.get(view1);
         TextView tempView2 = tempLabelView.get(view2);
-
-        tempView1.setText(textView1.getText());
-        tempView2.setText(textView2.getText());
+        textView1.setText(friends.get(view1).getLabel());
+        textView2.setText(friends.get(view2).getLabel());
+        tempView1.setText(friends.get(view1).getLabel());
+        tempView2.setText(friends.get(view2).getLabel());
 
         int distance1 = viewsFactory.getDistance(textView1);
         double angle1 = viewsFactory.getAngle(textView1);
