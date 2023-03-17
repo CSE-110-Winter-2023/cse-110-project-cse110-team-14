@@ -6,6 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <ImageView
+        android:id="@+id/greendot"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        app:srcCompat="@drawable/green_dot"
+        android:visibility="invisible"
+        />
+
+    <ImageView
+        android:id="@+id/reddot"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintEnd_toEndOf="@id/greendot"
+        app:layout_constraintBottom_toBottomOf="@id/greendot"
+        app:srcCompat="@drawable/red_dot"
+        />
+
+    <TextView
+        android:id="@+id/conntext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/greendot"
+        app:layout_constraintBottom_toBottomOf="@id/greendot"
+        android:layout_marginEnd="10dp"
+        android:text="1m"/>
+
+    <!--<TextView
+        android:id="@+id/uid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="100dp"
+        android:text="uid: uh439g49309d903h9"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
@@ -92,13 +136,14 @@
 
         <EditText
             android:id="@+id/URL"
-            android:layout_width="250dp"
+            android:layout_width="180dp"
             android:layout_height="50dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:hint="Input Your Own Server URL"
+            android:hint="@string/url_input_hint"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="text"/>
 
         <Button
             android:id="@+id/saveURL"
@@ -107,9 +152,10 @@
             android:onClick="onSaveURLClicked"
             android:text="Save"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="18dp"
             app:layout_constraintStart_toEndOf="@+id/URL"
             app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

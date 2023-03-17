@@ -59,6 +59,8 @@ public class Friend {
     public void setVersion(int version) {
         this.version = version;
     }
+    public void setDistance(double distance) {this.distance = distance;}
+    public void setRelativeAngle(double relativeAngle) {this.relativeAngle = relativeAngle;}
     public String getPublic_code() {
         return this.public_code;
     }

@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.util.Log;
+
 import androidx.annotation.WorkerThread;
 
 import com.example.myapplication.model.Friend;
@@ -50,6 +52,7 @@ public class ServerAPI {
         // URLs cannot contain spaces, so we replace them with %20.
         String encodedMsg = friend.getPublic_code().replace(" ", "%20");
         String encodedURL = url.replace(" ", "n%20");
+        //Log.d("Update Actual URL", ""+encodedURL+encodedMsg);
 
         var request = new Request.Builder()
                 .url(encodedURL + encodedMsg)
@@ -76,6 +79,7 @@ public class ServerAPI {
     public void uploadLocation(LatLng myLocation, String url) {
 
         String encodedURL = url.replace(" ", "n%20");
+        //Log.d("Upload Actual URL", ""+encodedURL);
 
         String postBody = "{\n"
                 + "\"private_code\": \"" + privateCode + "\",\n"
