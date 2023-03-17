@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.myapplication.FriendViewAdaptor;
@@ -15,9 +16,10 @@ import com.example.myapplication.model.Friend;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-
+@RunWith(AndroidJUnit4.class)
 public class FriendViewAdaptorTest {
 
     private Context context;
@@ -27,7 +29,7 @@ public class FriendViewAdaptorTest {
 
     @Before
     public void setUp() {
-        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        context = ApplicationProvider.getApplicationContext();
         viewsFactory = new ViewsFactory(context);
         ConstraintLayout constraintLayout = new ConstraintLayout(context);
         viewAdaptor = new FriendViewAdaptor(context, constraintLayout);

@@ -2,6 +2,7 @@ package com.example;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.w3c.dom.Text;
 
 import static org.junit.Assert.assertEquals;
@@ -12,11 +13,12 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.myapplication.ViewsFactory;
 import com.example.myapplication.model.Friend;
-
+@RunWith(AndroidJUnit4.class)
 public class ViewsFactoryTest {
 
     private ViewsFactory viewsFactory;
@@ -26,7 +28,7 @@ public class ViewsFactoryTest {
 
     @Before
     public void create(){
-        this.context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        this.context = ApplicationProvider.getApplicationContext();
         viewsFactory = new ViewsFactory(context);
 
         ConstraintLayout.LayoutParams newLayoutParams1 = new ConstraintLayout.LayoutParams(
