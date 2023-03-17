@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
     private TimeThread timeThread;
     private long timeDifference;
     private boolean GPSLoss = false;
+    private boolean GPSConnectivity = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +98,14 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         @Override
         public void run() {
             if(open.isUidGenerated()) {
-                if (GPSLoss == false) {
+                if (GPSConnectivity) {
                     client = ServerAPI.provide(open.getName(), open.getUID(), open.getPrivateKey());
                     for(int i = 0; i < friends.size(); i++) {
                         client.updateLocation(friends.get(i), customizedURL);
                     }
                     client.uploadLocation(myLocation, customizedURL);
                 }
+                //Log.d("GPS Connectivity", ""+GPSConnectivity);
             }
         }
     }
@@ -221,6 +223,10 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         for(int i = 0; i < friends.size(); i++) {
             double angle = friends.get(i).calculateRelativeAngle(myLocation.latitude, myLocation.longitude, orientation);
             viewAdaptor.changeAngle(i, angle);
+            if(!GPSConnectivity) {
+                double distance = friends.get(i).getDistance();
+                viewAdaptor.changeDistance(i, distance, zoom.getZoomLevel());
+            }
         }
     }
 
@@ -238,8 +244,9 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         return zoom.getZoomLevel();
     }
 
-    public void handleGPSLoss(boolean GPSLoss, long timeDifference) {
+    public void handleGPSLoss(boolean GPSLoss, long timeDifference, boolean GPSConnectivity) {
         this.GPSLoss = GPSLoss;
+        this.GPSConnectivity = GPSConnectivity;
         this.timeDifference = timeDifference;
         ImageView greenDot = findViewById(R.id.greendot);
         ImageView redDot = findViewById(R.id.reddot);
