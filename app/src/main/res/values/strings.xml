@@ -3,5 +3,6 @@
     <string name="app_name">My Application</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="default_server_link">https://socialcompass.goto.ucsd.edu/location/</string>
+    <string name="url_input_hint"><font size="15">Input Your Own Server URL</font></string>
     >>>>>>> main
 </resources>

@@ -6,9 +6,11 @@ import androidx.core.util.Pair;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        timeThread = new TimeThread(this);
+        timeThread.start();
+
         this.setUp();
         this.setRingUI();
 
@@ -86,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
 
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
-        timeThread = new TimeThread(this);
     }
 
     private class RequestThread implements Runnable {
@@ -234,10 +238,42 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         return zoom.getZoomLevel();
     }
 
-    public void onGPSLoss(boolean GPSLoss, long timeDifference) {
-        // Do something with the data passed from the TimeThread
+    public void handleGPSLoss(boolean GPSLoss, long timeDifference) {
         this.GPSLoss = GPSLoss;
         this.timeDifference = timeDifference;
+        ImageView greenDot = findViewById(R.id.greendot);
+        ImageView redDot = findViewById(R.id.reddot);
+        TextView connText = findViewById(R.id.conntext);
+        // red dot + text if gps lost
+        if (GPSLoss) {
+            int hr = (int) (timeDifference / (1000*60*60));
+            int min = (int) ((timeDifference / (1000*60)) % 60);
+            String dcText;
+            if (hr > 0) {
+                dcText = hr + "h " + min + "m";
+            } else{
+                dcText = min + "m";
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connText.setText(dcText);
+                    connText.setVisibility(View.VISIBLE);
+                    redDot.setVisibility(View.VISIBLE);
+                    greenDot.setVisibility(View.INVISIBLE);
+                }
+            });
+        // else green dot
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    connText.setVisibility(View.INVISIBLE);
+                    redDot.setVisibility(View.INVISIBLE);
+                    greenDot.setVisibility(View.VISIBLE);
+                }
+            });
+        }
     }
 
 }
