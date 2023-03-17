@@ -9,12 +9,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.myapplication.activity.MainActivity;
 import com.example.myapplication.model.Friend;
 import com.example.myapplication.model.FriendDao;
 import com.example.myapplication.model.FriendDatabase;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -32,7 +34,7 @@ public class AddFriendDialog {
 
     public AddFriendDialog(Context context, ServerAPI api){
         this.context = context;
-        this.api = api;
+        this.api = new ServerAPI();
     }
 
     public void addNewFriendDialog(ArrayList<Friend> friends, FriendViewAdaptor viewAdaptor, FriendDatabase db, FriendDao dao) {
@@ -77,13 +79,12 @@ public class AddFriendDialog {
                     Friend newFriend = new Friend(name, "null", 0, 0, 1);
                     try {
                         boolean result = future.get();
-                        if (result == true) {
+                        if (result) {
                             dao.upsert(newFriend);
                             friends.add(newFriend);
                             viewAdaptor.addNewView(newFriend);
                             Toast.makeText(context, "UID added", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        } else {
                             Toast.makeText(context, "Invalid UID", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {

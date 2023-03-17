@@ -6,6 +6,7 @@ import androidx.core.util.Pair;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -66,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder(StrictMode.getVmPolicy())
+                .detectLeakedClosableObjects()
+                .build());
+
         this.setUp();
         this.setRingUI();
 
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements TimeThread.TimeTh
         // Schedule the RequestThread task to run every 1 seconds
         this.scheduleRate(0,1);
         timeThread = new TimeThread(this);
+        timeThread.start();
     }
 
     private class RequestThread implements Runnable {
